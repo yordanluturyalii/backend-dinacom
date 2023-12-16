@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->brandName('Sadam')
+            ->favicon('images/favicon.png')
             ->colors([
                 'primary' => '#0E206A',
             ])
