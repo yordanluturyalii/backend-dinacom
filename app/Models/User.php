@@ -13,6 +13,26 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    /**
+     * Summary of table
+     * @var string
+     */
+    protected $table = 'users';
+
+    /**
+     * Summary of fillable
+     * @var array
+     */
+    protected $fillable = [
+        'nama_lengkap',
+        'tanggal_lahir',
+        'tempat_tinggal',
+        'username',
+        'email',
+        'password',
+        'password_konfirmasi'
+    ];
+
     // Rest omitted for brevity
 
     /**
@@ -24,7 +44,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
-
+    
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *
