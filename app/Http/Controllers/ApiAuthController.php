@@ -6,10 +6,12 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ApiAuthController extends Controller
@@ -24,7 +26,7 @@ class ApiAuthController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(['halo' => 'jojo']);
     }
 
     /**
@@ -59,9 +61,73 @@ class ApiAuthController extends Controller
         //
     }
 
-    public function login()
+    /**
+     * Summary of login
+     * @param \Illuminate\Http\Request $request
+     */
+    public function login(Request $request)
     {
-        # code...
+        try {
+            $credentials = $request->only(['username', 'password']);
+
+            $rules = [
+                'username' => ['required', 'min:6'],
+                'password' => ['required', 'min:8']
+            ];
+
+            $message = [
+                'required' => 'Mohon maaf, input tidak boleh kosong. Silakan isi nilai yang diperlukan.',
+                'username.min' => 'Mohon masukkan :attribute setidaknya 6 karakter untuk.',
+                'password.min' => 'Mohon masukkan :attribute setidaknya 8 karakter.'
+            ];
+
+            $validator = Validator::make($credentials, $rules, $message);
+            $token = JWTAuth::attempt($credentials);
+
+            if (!$token) {
+                $json = [
+                    'status' => 401,
+                    'message' => 'Akses Tidak Sah'
+                ];
+
+                return response()->json($json, 401);
+            }
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $user = Auth::user();
+            JWTAuth::factory()->setTTL(43200);
+            $json = [
+                'status' => 200,
+                'message' => 'Login Berhasil',
+                'data' => new UserResource($user),
+                'authorization' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                    'expires_in' => JWTAuth::factory()->getTTL()
+                ]
+            ];
+
+            return response()->json($json, 200);
+
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors();
+
+            $json = [
+                'status' => 422,
+                'message' => 'Validasi Error',
+                'errors' => $errors
+            ];
+
+            return response()->json($json, 422);
+        } catch (JWTException $e) {
+            $json = [
+                'status' => 500,
+                'message' => 'Tidak bisa membuat token'
+            ];
+        }
     }
 
     /**
@@ -79,7 +145,7 @@ class ApiAuthController extends Controller
             'username' => ['required', 'min:6', 'unique:users,username'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:8'],
-            'password_konfirmasi' => ['required','min:8','same:password']
+            'password_konfirmasi' => ['required', 'min:8', 'same:password']
         ];
 
         $message = [
@@ -114,16 +180,10 @@ class ApiAuthController extends Controller
 
             DB::commit();
 
-            $token = JWTAuth::fromUser($user);
-
             $json = [
                 'status' => 201,
                 'message' => 'Registrasi Berhasil',
-                'response' => new UserResource($user),
-                'authorization' => [
-                    'token' => $token,
-                    'type' => 'bearer'
-                ]
+                'data' => new UserResource($user),
             ];
             return response()->json($json, 201);
         } catch (ValidationException $e) {
@@ -132,7 +192,8 @@ class ApiAuthController extends Controller
 
             $json = [
                 'status' => 422,
-                'message' => $errors
+                'message' => 'Validasi Error',
+                'errors' => $errors
             ];
 
             return response()->json($json, 422);
