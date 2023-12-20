@@ -205,4 +205,14 @@ class ApiAuthController extends Controller
             return response()->json($json, 400);
         }
     }
+
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Berhasil untuk Keluar'
+        ]);
+    }
 }
