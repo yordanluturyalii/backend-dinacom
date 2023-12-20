@@ -23,5 +23,5 @@ Route::post('/v1/login', [ApiAuthController::class, 'login'])->name('login');
 Route::post('/v1/register', [ApiAuthController::class, 'register'])->name('register');
 
 Route::group(['middleware' => 'api'], function () {
-    Route::get('/v1/logout', [ApiAuthController::class, 'index']);
+    Route::get('/v1/logout', [ApiAuthController::class, 'logout']);
 });
