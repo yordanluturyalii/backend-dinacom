@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('nama_lengkap')->nullable(false);
+            $table->string('avatar')->nullable(true);
             $table->date('tanggal_lahir')->nullable(false);
             $table->text('tempat_tinggal')->nullable(false);
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password')->nullable(false);
             $table->string('password_konfirmasi')->nullable(false);
+            $table->boolean('status')->default(1)->comment('1 = akun aktif, 0 = akun nonaktif');
             $table->timestamps();
         });
     }
