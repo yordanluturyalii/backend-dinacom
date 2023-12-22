@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Mail\ResetPassword;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use PHLAK\StrGen\CharSet;
+use PHLAK\StrGen\Generator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -18,7 +23,7 @@ class ApiAuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'resetPasswordLink', 'resetPassword']]);
     }
 
     /**
@@ -111,7 +116,6 @@ class ApiAuthController extends Controller
             ];
 
             return response()->json($json, 200);
-
         } catch (ValidationException $e) {
             $errors = $e->validator->errors();
 
@@ -214,5 +218,92 @@ class ApiAuthController extends Controller
             'status' => 200,
             'message' => 'Berhasil untuk Keluar'
         ]);
+    }
+
+    public function resetPasswordLink(Request $request)
+    {
+        $validate = User::query()->where('email', '=', $request->email)->first();
+        if (!$validate) {
+            return response()->json([
+                'message' => 'Email tidak ditemukan'
+            ]);
+        }
+
+        $str = new Generator();
+        $token = $str->charset(CharSet::LOWER_ALPHA)->length(40)->generate();
+
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
+
+        Mail::to($request->email)->send(new ResetPassword($token, $request->email));
+
+        $json = [
+            'status' => 200,
+            'message' => "Link ganti kata sandi telah kami kirimkan ke $request->email"
+        ];
+
+        return response()->json($json, 200);
+    }
+
+    public function resetPassword($token, Request $request)
+    {
+        // return $token;
+        try {
+            $rules = [
+                'password' => ['required', 'min:8'],
+                'password_konfirmasi' => ['required', 'min:8', 'same:password']
+            ];
+
+            $message = [
+                'required' => 'Mohon maaf, input tidak boleh kosong. Silakan isi nilai yang diperlukan.',
+                'min' => 'Mohon masukkan password setidaknya 8 karakter.',
+                'password_konfirmasi.same' => 'Maaf, password tidak sesuai.'
+            ];
+
+            $validate = Validator::make($request->all(), $rules, $message);
+
+            if ($validate->fails()) {
+                throw new ValidationException($validate);
+            }
+
+            $tokenIsValid = DB::table('password_resets')->where('token', $token)->first();
+            if ($tokenIsValid) {
+                $email = $tokenIsValid->email;
+
+                DB::beginTransaction();
+                User::where('email', $email)
+                    ->update([
+                        'password' => bcrypt($request->password),
+                        'password_konfirmasi' => $request->password_konfirmasi
+                    ]);
+                DB::commit();
+
+                $json = [
+                    'status' => 201,
+                    'message' => 'Kata Sandi Berhasil Diubah',
+                ];
+
+                return response()->json($json, 201);
+            }
+
+            return response()->json([
+                'status' => 498,
+                'message' => 'Maaf, token tidak valid'
+            ]);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            $errors = $e->validator->errors()->all();
+
+            $json = [
+                'status' => 422,
+                'message' => 'Validasi Error',
+                'errors' => $errors
+            ];
+
+            return response()->json($json, 422);
+        }
     }
 }

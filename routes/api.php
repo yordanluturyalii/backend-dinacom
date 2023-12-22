@@ -21,7 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/v1/login', [ApiAuthController::class, 'login'])->name('login');
 Route::post('/v1/register', [ApiAuthController::class, 'register'])->name('register');
+Route::post('/v1/reset-password-link', [ApiAuthController::class, 'resetPasswordLink'])->name('reset.password.link');
+Route::post('/v1/reset-password/{token}', [ApiAuthController::class, 'resetPassword'])->name('reset.password');
 
 Route::group(['middleware' => 'api'], function () {
-    Route::get('/v1/logout', [ApiAuthController::class, 'logout']);
+    Route::post('/v1/logout', [ApiAuthController::class, 'logout'])->name('logout');
+    Route::get('/v1/me',[ApiAuthController::class, 'index'] );
 });
