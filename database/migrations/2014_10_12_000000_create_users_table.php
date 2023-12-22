@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('nama_lengkap')->nullable(false);
-            $table->string('avatar')->nullable(true);
+            $table->string('avatar')->default('images/avatar/avatar-placeholder.jpg');
             $table->date('tanggal_lahir')->nullable(false);
             $table->text('tempat_tinggal')->nullable(false);
             $table->string('username')->unique();
