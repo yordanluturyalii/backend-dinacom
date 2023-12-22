@@ -69,6 +69,7 @@ class UserResource extends Resource
                         ->grow(false),
                     Stack::make([
                         Tables\Columns\TextColumn::make('nama_lengkap')
+                            ->label('Full Name')
                             ->weight(FontWeight::Bold)
                             ->limit(24),
                         Tables\Columns\TextColumn::make('username')
@@ -81,13 +82,16 @@ class UserResource extends Resource
                             ->searchable()
                             ->limit(24),
                         Tables\Columns\TextColumn::make('tanggal_lahir')
+                            ->label('Date of Birth')
                             ->icon('heroicon-m-cake')
                             ->sortable(),
                     ]),
                     Tables\Columns\TextColumn::make('tempat_tinggal')
+                        ->label('Address')
                         ->icon('heroicon-s-home')
                         ->limit(28),
                     Tables\Columns\ToggleColumn::make('status')
+                        ->tooltip('Account Status')
                         ->onIcon('heroicon-s-no-symbol')
                         ->offIcon('heroicon-s-no-symbol')
                         ->onColor('success')
