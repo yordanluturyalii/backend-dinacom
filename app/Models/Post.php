@@ -28,4 +28,29 @@ class Post extends Model
     {
         return $this->hasMany(PostImage::class);
     }
+
+    public function PostComments(): HasMany
+    {
+        return $this->hasMany(PostComment::class);
+    }
+
+    public function PostLikes(): HasMany
+    {
+        return $this->hasMany(PostLike::class);
+    }
+
+    public function PostReports(): HasMany
+    {
+        return $this->hasMany(PostReport::class);
+    }
+
+    public function PostShares(): HasMany
+    {
+        return $this->hasMany(PostShare::class);
+    }
+
+    public function PostViews(): HasMany
+    {
+        return $this->hasMany(PostView::class);
+    }
 }
