@@ -242,7 +242,8 @@ class ApiAuthController extends Controller
 
         $json = [
             'status' => 200,
-            'message' => "Link ganti kata sandi telah kami kirimkan ke $request->email"
+            'message' => "Link ganti kata sandi telah kami kirimkan ke $request->email",
+            'token' => $token
         ];
 
         return response()->json($json, 200);
