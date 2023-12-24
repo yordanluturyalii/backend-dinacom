@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ApiAuthController;
+use App\Http\Controllers\PostController;
+use App\Http\Resources\PostResource;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,5 +29,6 @@ Route::post('/v1/reset-password/{token}', [ApiAuthController::class, 'resetPassw
 
 Route::group(['middleware' => 'api'], function () {
     Route::post('/v1/logout', [ApiAuthController::class, 'logout'])->name('logout');
+    Route::post('/v1/post/report', [PostController::class, 'store'])->name('post.report');
     Route::get('/v1/me',[ApiAuthController::class, 'index'] );
 });

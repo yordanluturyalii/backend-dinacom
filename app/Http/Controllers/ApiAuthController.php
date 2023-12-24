@@ -92,7 +92,7 @@ class ApiAuthController extends Controller
             if (!$token) {
                 $json = [
                     'status' => 401,
-                    'message' => 'Akses Tidak Sah'
+                    'message' => 'Unauthorized'
                 ];
 
                 return response()->json($json, 401);
@@ -179,7 +179,8 @@ class ApiAuthController extends Controller
                 'username' => $request->username,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
-                'password_konfirmasi' => $request->password_konfirmasi
+                'password_konfirmasi' => $request->password_konfirmasi,
+                'avatar' => "https://random.imagecdn.app/100/100"
             ]);
 
             DB::commit();
