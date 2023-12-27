@@ -22,13 +22,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/v1/login', [ApiAuthController::class, 'login'])->name('login');
-Route::post('/v1/register', [ApiAuthController::class, 'register'])->name('register');
-Route::post('/v1/reset-password-link', [ApiAuthController::class, 'resetPasswordLink'])->name('reset.password.link');
-Route::post('/v1/reset-password/{token}', [ApiAuthController::class, 'resetPassword'])->name('reset.password');
+Route::post('/v1/auth/login', [ApiAuthController::class, 'login'])->name('login');
+Route::post('/v1/auth/register', [ApiAuthController::class, 'register'])->name('register');
+Route::post('/v1/auth/reset-password-link', [ApiAuthController::class, 'resetPasswordLink'])->name('reset.password.link');
+Route::post('/v1/auth/reset-password/{token}', [ApiAuthController::class, 'resetPassword'])->name('reset.password');
 
 Route::group(['middleware' => 'api'], function () {
-    Route::post('/v1/logout', [ApiAuthController::class, 'logout'])->name('logout');
+    Route::post('/v1/auth/logout', [ApiAuthController::class, 'logout'])->name('logout');
     Route::post('/v1/post/report', [PostController::class, 'store'])->name('post.report');
-    Route::get('/v1/me',[ApiAuthController::class, 'index'] );
+    Route::get('/v1/report',[PostController::class, 'index'] );
 });

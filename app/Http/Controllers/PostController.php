@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostStoreRequest;
+use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\PostImage;
@@ -22,7 +23,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $report = Post::query()->where('post_visibility', '!=', 0)->paginate(5);
+        return new PostCollection($report);
     }
 
     /**
