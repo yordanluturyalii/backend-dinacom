@@ -30,5 +30,6 @@ Route::post('/v1/auth/reset-password/{token}', [ApiAuthController::class, 'reset
 Route::group(['middleware' => 'api'], function () {
     Route::post('/v1/auth/logout', [ApiAuthController::class, 'logout'])->name('logout');
     Route::post('/v1/post/report', [PostController::class, 'store'])->name('post.report');
-    Route::get('/v1/report',[PostController::class, 'index'] );
+    Route::get('/v1/reports',[PostController::class, 'index'])->name('reports');
+    Route::get('/v1/reports/latest',[PostController::class, 'indexLatest'] )->name('reports.latest');
 });
