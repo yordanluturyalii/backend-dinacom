@@ -96,4 +96,50 @@ class CommentController extends Controller
     {
         //
     }
+
+    public function replyComment(Request $request, $postId, $commentId)
+    {
+        try {
+            $rules = [
+                'content' => ['required'],
+                'name_visibility' => ['required']
+            ];
+            $message = [
+                'required' => 'Maaf, input :attribute tidak boleh kosong. Silakan isi kolom yang diperlukan sebelum melanjutkan.',
+            ];
+            $validator = Validator::make($request->all(), $rules, $message);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $user = Auth::user();
+            DB::beginTransaction();
+            $comment = new PostComment();
+            $comment->content = $request->content;
+            $comment->name_visibility = $request->name_visibility;
+            $comment->user_id = $user->id;
+            $comment->post_id = $postId;
+            $comment->parent_id = $commentId;
+            $comment->save();
+            DB::commit();
+
+            return response()->json([
+                'status' => 201,
+                'message' => 'Berhasil membuat comment',
+                'data' => new CommentResource($comment->load(['user']))
+            ]);
+        } catch (ValidationException $e) {
+            DB::rollback();
+
+            $errors = $e->validator->errors()->all();
+            $json = [
+                'status' => 422,
+                'message' => 'Validasi Error',
+                'error' => $errors
+            ];
+
+            return response()->json($json, 422);
+        }
+    }
 }

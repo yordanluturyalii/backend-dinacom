@@ -35,4 +35,5 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('/v1/reports/latest',[PostController::class, 'indexLatest'] )->name('latest.reports');
     Route::get('/v1/detail-report/{id}', [PostController::class, 'show'])->name('detail.report');
     Route::post('/v1/detail-report/{postId}/post/comment', [CommentController::class, 'store'])->name('post.comment');
+    Route::post('/v1/detail-report/{postId}/comment/{commentId}', [CommentController::class, 'replyComment'])->name('reply.comment');
 });
