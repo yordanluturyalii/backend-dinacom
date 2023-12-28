@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Table;
@@ -28,33 +29,33 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_lengkap')
-                    ->label('Full Name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('tanggal lahir')
-                    ->label('Date of Birth')
-                    ->required()
-                    ->maxDate(now()),
-                Forms\Components\TextInput::make('tempat_tinggal')
-                    ->label('Address')
-                    ->required(),
-                Forms\Components\TextInput::make('username')
-                    ->required(),
-                Forms\Components\TextInput::make('email')
-                    ->required()
-                    ->email(),
-                Forms\Components\TextInput::make('password')
-                    ->required()
-                    ->password(),
-                Forms\Components\Toggle::make('status')
-                    ->label('Account Status')
-                    ->required()
-                    ->onIcon('heroicon-s-no-symbol')
-                    ->offIcon('heroicon-s-no-symbol')
-                    ->onColor('success')
-                    ->offColor('danger')
-                    ->default(1),
+                // Forms\Components\TextInput::make('nama_lengkap')
+                //     ->label('Full Name')
+                //     ->required()
+                //     ->maxLength(255),
+                // Forms\Components\DatePicker::make('tanggal lahir')
+                //     ->label('Date of Birth')
+                //     ->required()
+                //     ->maxDate(now()),
+                // Forms\Components\TextInput::make('tempat_tinggal')
+                //     ->label('Address')
+                //     ->required(),
+                // Forms\Components\TextInput::make('username')
+                //     ->required(),
+                // Forms\Components\TextInput::make('email')
+                //     ->required()
+                //     ->email(),
+                // Forms\Components\TextInput::make('password')
+                //     ->required()
+                //     ->password(),
+                // Forms\Components\Toggle::make('status')
+                //     ->label('Account Status')
+                //     ->required()
+                //     ->onIcon('heroicon-s-no-symbol')
+                //     ->offIcon('heroicon-s-no-symbol')
+                //     ->onColor('success')
+                //     ->offColor('danger')
+                //     ->default(1),
             ]);
     }
 
@@ -65,31 +66,20 @@ class UserResource extends Resource
                 Split::make([
                     Tables\Columns\ImageColumn::make('avatar')
                         ->disk('images')
+                        ->tooltip('Avatar')
                         ->circular()
                         ->grow(false),
                     Stack::make([
                         Tables\Columns\TextColumn::make('nama_lengkap')
                             ->label('Full Name')
+                            ->tooltip('Full Name')
                             ->weight(FontWeight::Bold)
-                            ->limit(24),
+                            ->grow(false),
                         Tables\Columns\TextColumn::make('username')
+                            ->tooltip('Username')
                             ->searchable()
-                            ->limit(24),
+                            ->grow(false)
                     ]),
-                    Stack::make([
-                        Tables\Columns\TextColumn::make('email')
-                            ->icon('heroicon-m-envelope')
-                            ->searchable()
-                            ->limit(24),
-                        Tables\Columns\TextColumn::make('tanggal_lahir')
-                            ->label('Date of Birth')
-                            ->icon('heroicon-m-cake')
-                            ->sortable(),
-                    ]),
-                    Tables\Columns\TextColumn::make('tempat_tinggal')
-                        ->label('Address')
-                        ->icon('heroicon-s-home')
-                        ->limit(28),
                     Tables\Columns\ToggleColumn::make('status')
                         ->tooltip('Account Status')
                         ->onIcon('heroicon-s-no-symbol')
@@ -98,7 +88,24 @@ class UserResource extends Resource
                         ->offColor('danger')
                         ->grow(false)
                         ->alignEnd()
-                ])
+                ]),
+                Panel::make([
+                    Split::make([
+                        Tables\Columns\TextColumn::make('email')
+                            ->tooltip('Email')
+                            ->icon('heroicon-m-envelope')
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('tanggal_lahir')
+                            ->label('Date of Birth')
+                            ->tooltip('Date of Birth')
+                            ->icon('heroicon-m-cake')
+                            ->sortable(),
+                        Tables\Columns\TextColumn::make('tempat_tinggal')
+                            ->label('Address')
+                            ->tooltip('Home Address')
+                            ->icon('heroicon-s-home'),
+                    ])
+                ])->collapsed(false)
             ])
             ->filters([
                 //
