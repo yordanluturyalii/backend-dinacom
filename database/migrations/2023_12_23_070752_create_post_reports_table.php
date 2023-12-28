@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('post_reports', function (Blueprint $table) {
             $table->id();
-            $table->text('reason');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
             $table->timestamps();
