@@ -15,7 +15,7 @@ class CommentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => new UserResource($this->user),
+            'user' => $this->when($this->name_visibility ==  1,new UserResource($this->user)),
             'contentComment' => $this->content,
             'visibility' => $this->name_visibility,
             'publishedAt' => $this->created_at
