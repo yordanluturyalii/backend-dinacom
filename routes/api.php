@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiAuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
@@ -31,5 +32,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('/v1/auth/logout', [ApiAuthController::class, 'logout'])->name('logout');
     Route::post('/v1/post/report', [PostController::class, 'store'])->name('post.report');
     Route::get('/v1/reports',[PostController::class, 'index'])->name('reports');
-    Route::get('/v1/reports/latest',[PostController::class, 'indexLatest'] )->name('reports.latest');
+    Route::get('/v1/reports/latest',[PostController::class, 'indexLatest'] )->name('latest.reports');
+    Route::get('/v1/detail-report/{id}', [PostController::class, 'show'])->name('detail.report');
+    Route::post('/v1/detail-report/{postId}/post/comment', [CommentController::class, 'store'])->name('post.comment');
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostStoreRequest;
+use App\Http\Resources\DetailPostResource;
 use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
@@ -120,7 +121,12 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $report = Post::query()->where('post_visibility', '!=', 0)->findOrFail($id);
+        return response()->json([
+            'status' => 200,
+            'message' => 'Berhasil mengambil data',
+            'data' => new DetailPostResource($report->load(['user', 'postImages', 'PostComments']))
+        ]);
     }
 
     /**
