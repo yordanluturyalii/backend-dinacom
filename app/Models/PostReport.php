@@ -11,7 +11,6 @@ class PostReport extends Model
     use HasFactory;
 
     protected $fillable = [
-        'reason',
         'user_id',
         'post_id',
     ];
