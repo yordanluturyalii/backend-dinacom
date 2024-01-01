@@ -24,7 +24,7 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?int $navigationSort = 2;
 
@@ -148,7 +148,19 @@ class PostResource extends Resource
                                         2 => 'success',
                                         3 => 'danger',
                                     }),
-                                TextEntry::make('status_message')
+                                TextEntry::make('status_message'),
+                                TextEntry::make('postComments')
+                                    ->label('Post Comments')
+                                    ->formatStateUsing(fn ($record) => $record->postComments->count()),
+                                TextEntry::make('postLikes')
+                                    ->label('Post Likes')
+                                    ->formatStateUsing(fn ($record) => $record->postLikes->count()),
+                                TextEntry::make('postShares')
+                                    ->label('Post Shares')
+                                    ->formatStateUsing(fn ($record) => $record->postShares->count()),
+                                TextEntry::make('postViews')
+                                    ->label('Post Views')
+                                    ->formatStateUsing(fn ($record) => $record->postViews->count())
                             ])
                             ->columns(),
                         Section::make('Body')
