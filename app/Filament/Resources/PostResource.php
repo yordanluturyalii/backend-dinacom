@@ -39,7 +39,7 @@ class PostResource extends Resource
                         2 => 'Selesai',
                         3 => 'Ditolak'
                     ]),
-                Forms\Components\Textarea::make('status_message')
+                // Forms\Components\Textarea::make('status_message')
             ]);
     }
 
@@ -148,7 +148,7 @@ class PostResource extends Resource
                                         2 => 'success',
                                         3 => 'danger',
                                     }),
-                                TextEntry::make('status_message'),
+                                // TextEntry::make('status_message'),
                                 TextEntry::make('postComments')
                                     ->label('Post Comments')
                                     ->formatStateUsing(fn ($record) => $record->postComments->count()),
@@ -201,5 +201,10 @@ class PostResource extends Resource
             // 'create' => Pages\CreatePost::route('/create'),
             'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }
