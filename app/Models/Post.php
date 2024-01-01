@@ -17,7 +17,6 @@ class Post extends Model
         'name_visibility',
         'post_visibility',
         'status',
-        'status_message',
         'user_id'
     ];
 
