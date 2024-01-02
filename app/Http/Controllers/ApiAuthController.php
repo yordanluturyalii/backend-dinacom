@@ -180,7 +180,7 @@ class ApiAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'password_konfirmasi' => $request->password_konfirmasi,
-                'avatar' => "https://random.imagecdn.app/100/100"
+                'avatar' => "https://random-image-pepebigotes.vercel.app/api/random-image"
             ]);
 
             DB::commit();
