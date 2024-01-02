@@ -182,7 +182,7 @@ class ApiAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'password_konfirmasi' => $request->password_konfirmasi,
-                'avatar' => $avatar->image("/public/images/avatar", 100, 100, null, true)
+                'avatar' => 'https://xsgames.co/randomusers/avatar.php'
             ]);
 
             DB::commit();
