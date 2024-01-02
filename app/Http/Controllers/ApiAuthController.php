@@ -182,7 +182,7 @@ class ApiAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'password_konfirmasi' => $request->password_konfirmasi,
-                'avatar' => $avatar->image("/public/image/avatar", 100, 100, null, true)
+                'avatar' => $avatar->image("/public/images/avatar", 100, 100, null, true)
             ]);
 
             DB::commit();
