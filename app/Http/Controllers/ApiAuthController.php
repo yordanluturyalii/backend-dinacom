@@ -171,6 +171,8 @@ class ApiAuthController extends Controller
                 throw new ValidationException($validator);
             }
 
+            $avatar = new \Faker\Generator();
+
             DB::beginTransaction();
             $user = User::create([
                 'nama_lengkap' => $request->nama_lengkap,
@@ -180,7 +182,7 @@ class ApiAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'password_konfirmasi' => $request->password_konfirmasi,
-                'avatar' => "https://random-image-pepebigotes.vercel.app/api/random-image"
+                'avatar' => $avatar->image("/public/image/avatar", 100, 100, null, true)
             ]);
 
             DB::commit();
