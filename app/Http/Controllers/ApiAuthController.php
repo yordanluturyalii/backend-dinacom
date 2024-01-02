@@ -171,7 +171,6 @@ class ApiAuthController extends Controller
                 throw new ValidationException($validator);
             }
 
-            $avatar = new \Faker\Generator();
 
             DB::beginTransaction();
             $user = User::create([
