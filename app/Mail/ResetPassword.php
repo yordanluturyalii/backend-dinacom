@@ -43,7 +43,7 @@ class ResetPassword extends Mailable
         return new Content(
             markdown: 'emails.reset-password',
             with: [
-                'url' => "https://127.0.0.1:8000/reset-password/{$this->token}"
+                'url' => "https://sadam.fr.to/reset-password/{$this->token}"
             ]
         );
     }

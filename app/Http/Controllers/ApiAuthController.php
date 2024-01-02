@@ -92,7 +92,7 @@ class ApiAuthController extends Controller
             if (!$token) {
                 $json = [
                     'status' => 401,
-                    'message' => 'Unauthorized'
+                    'message' => 'Gagal, Silahkan coba lagi'
                 ];
 
                 return response()->json($json, 401);
@@ -115,7 +115,7 @@ class ApiAuthController extends Controller
                 ]
             ];
 
-            return response()->json($json, 200);
+            return response()->json($json);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors();
 
