@@ -77,7 +77,7 @@ class PostController extends Controller
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
                     $fileName = time() . rand(1, 99) . '.' . $file->extension();
-                    $file->move(public_path('/images/post'), $fileName);
+                    $file->move(public_path('/images/post/'), $fileName);
                     $files[] = $fileName;
                 }
             }
@@ -87,7 +87,7 @@ class PostController extends Controller
             foreach ($files as $fileName) {
                 $postImage = new PostImage();
                 $postImage->post_id = $post->id;
-                $postImage->path = '/images/post' . $fileName;
+                $postImage->path = '/images/post/' . $fileName;
                 $postImage->save();
             }
             DB::commit();
