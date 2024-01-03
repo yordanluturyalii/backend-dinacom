@@ -16,6 +16,7 @@ class PostResource extends JsonResource
     {
         return [
             'user' => $this->when($request->name_visibility ==  1, new UserResource($this->whenLoaded('user'))),
+            'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
             'image' => PostImageResource::collection($this->whenLoaded('postImages')),

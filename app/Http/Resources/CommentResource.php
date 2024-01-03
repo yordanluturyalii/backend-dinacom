@@ -16,6 +16,7 @@ class CommentResource extends JsonResource
     {
         return [
             'user' => $this->when($this->name_visibility ==  1,new UserResource($this->user)),
+            'id' => $this->id,
             'contentComment' => $this->content,
             'visibility' => $this->name_visibility,
             'publishedAt' => $this->created_at

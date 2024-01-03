@@ -16,6 +16,7 @@ class DetailPostResource extends JsonResource
     {
         return [
             'user' => new UserResource($this->whenLoaded('user')),
+            'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
             'image' => PostImageResource::collection($this->whenLoaded('postImages')),
