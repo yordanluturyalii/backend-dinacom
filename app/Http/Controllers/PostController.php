@@ -164,4 +164,17 @@ class PostController extends Controller
             'message' => 'Berhasil Memberikan Tanggapan Cepat'
         ]);
     }
+
+    public function shareReport(): JsonResponse
+    {
+        $url = url()->current();
+
+        $json = [
+            'status' => 200,
+            'message' => 'Berhasil mengambil url',
+            'data' => $url
+        ];
+
+        return response()->json($json, 200);
+    }
 }
