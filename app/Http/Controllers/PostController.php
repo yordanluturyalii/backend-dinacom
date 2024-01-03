@@ -8,7 +8,10 @@ use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\PostImage;
+use App\Models\PostLike;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -143,5 +146,22 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function giveLike($postId): JsonResponse
+    {
+        $post = Post::query()->findOrFail($postId);
+        $user = Auth::user();
+//        dd($user);
+
+        $likedPost = new PostLike();
+        $likedPost->user_id = $user->id;
+        $likedPost->post_id = $post->id;
+        $likedPost->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Berhasil Memberikan Tanggapan Cepat'
+        ]);
     }
 }

@@ -172,10 +172,9 @@ class ApiAuthController extends Controller
                 throw new ValidationException($validator);
             }
 
-            $str = new Generator();
-            $avatar_id = $str->charset(CharSet::LOWER_ALPHA)->length(10)->generate();
-
+            $rand_color = '#' . dechex(mt_rand(0, 16777215));
             $avatar = new Avatar();
+            $avatar->create($request->nama_lengkap)->setBackground($rand_color)->save(public_path('/images/avatar/avatar-'.$request->username.'.png'));
             DB::beginTransaction();
             $user = User::create([
                 'nama_lengkap' => $request->nama_lengkap,
@@ -185,7 +184,7 @@ class ApiAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'password_konfirmasi' => $request->password_konfirmasi,
-//                'avatar' => $avatar->create($request->nama_lengkap)->save(public_path('/images/avatar/avatar-' . $avatar_id . '.png'))
+                'avatar' => url('/images/avatar/avatar-'.$request->username.'.png')
             ]);
 
             DB::commit();
