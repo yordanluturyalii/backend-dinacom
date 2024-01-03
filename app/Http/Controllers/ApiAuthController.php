@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Laravolt\Avatar\Avatar;
 use PHLAK\StrGen\CharSet;
 use PHLAK\StrGen\Generator;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -171,7 +172,10 @@ class ApiAuthController extends Controller
                 throw new ValidationException($validator);
             }
 
+            $str = new Generator();
+            $avatar_id = $str->charset(CharSet::LOWER_ALPHA)->length(10)->generate();
 
+            $avatar = new Avatar();
             DB::beginTransaction();
             $user = User::create([
                 'nama_lengkap' => $request->nama_lengkap,
@@ -181,7 +185,7 @@ class ApiAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'password_konfirmasi' => $request->password_konfirmasi,
-                'avatar' => 'https://xsgames.co/randomusers/avatar.php'
+//                'avatar' => $avatar->create($request->nama_lengkap)->save(public_path('/images/avatar/avatar-' . $avatar_id . '.png'))
             ]);
 
             DB::commit();
