@@ -87,7 +87,7 @@ class PostController extends Controller
             foreach ($files as $fileName) {
                 $postImage = new PostImage();
                 $postImage->post_id = $post->id;
-                $postImage->path = '/images/post/' . $fileName;
+                $postImage->path = '/images/post' . $fileName;
                 $postImage->save();
             }
             DB::commit();
