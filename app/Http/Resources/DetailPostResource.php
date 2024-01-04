@@ -25,7 +25,8 @@ class DetailPostResource extends JsonResource
             'publishedAt' => $this->created_at,
             'totalComment' => count($this->PostComments),
             'totalNeedResponse' => count($this->PostLikes),
-            'comment' => CommentResource::collection($this->whenLoaded('PostComments'))
+            'comment' => CommentResource::collection($this->whenLoaded('PostComments')),
+            'url' => url()->current()
         ];
     }
 }
