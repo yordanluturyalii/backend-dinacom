@@ -18,15 +18,16 @@ class DashboardUserController extends Controller
 
     public function detailDashboardUser(): JsonResponse
     {
-        $report = Post::all();
+        $user = Auth::user();
+        $report = Post::query()->where('user_id', $user->id)->get();
         return response()->json([
             'status' => 200,
             'message' => 'Berhasil mengambil Data Laporan',
             'data' => PostResource::collection($report),
             'totalStatusNotYetHandled' => count(Post::query()->where('status', 0)->get()),
-            'totalStatusHandled' => count(Post::query()->where('status', 1)->get()),
-            'totalStatusFinished' => count(Post::query()->where('status', 2)->get()),
-            'totalStatusCanceled' => count(Post::query()->where('status', 3)->get()),
+            'totalStatusHandled' => count(Post::query()->where('status', 1)->where('user_id', $user->id)->get()),
+            'totalStatusFinished' => count(Post::query()->where('status', 2)->where('user_id', $user->id)->get()),
+            'totalStatusCanceled' => count(Post::query()->where('status', 3)->where('user_id', $user->id)->get()),
         ]);
     }
 }
