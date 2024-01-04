@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,16 +16,16 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => $this->when($request->name_visibility ==  1, new UserResource($this->whenLoaded('user'))),
+            'user' => $this->when($this->name_visibility ==  1, new UserResource($this->user)),
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'image' => PostImageResource::collection($this->whenLoaded('postImages')),
+            'image' => PostImageResource::collection($this->postImages),
             'status' => $this->status,
             'visibility' => $this->post_visibility,
             'publishedAt' => $this->created_at,
             'totalComment' => count($this->PostComments),
-            'totalNeedResponse' => count($this->PostLikes)
+            'totalNeedResponse' => count($this->PostLikes),
         ];
     }
 }
