@@ -9,6 +9,8 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\PostLike;
+use App\Models\PostReport;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -152,7 +154,7 @@ class PostController extends Controller
     {
         $post = Post::query()->findOrFail($postId);
         $user = Auth::user();
-//        dd($user);
+//       dd($user);
 
         $likedPost = new PostLike();
         $likedPost->user_id = $user->id;
@@ -162,6 +164,22 @@ class PostController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Berhasil Memberikan Tanggapan Cepat'
+        ]);
+    }
+
+    public function reportingReport($postId)
+    {
+        $post = Post::query()->findOrFail($postId);
+        $user = Auth::user();
+
+        $reportPost = new PostReport();
+        $reportPost->user_id = $user->id;
+        $reportPost->post_id = $post->id;
+        $reportPost->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Berhasil Melapor                                                                                                                                                                          kan Laporan'
         ]);
     }
 }
