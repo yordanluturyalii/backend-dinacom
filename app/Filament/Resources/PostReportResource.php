@@ -7,6 +7,9 @@ use App\Filament\Resources\PostReportResource\RelationManagers;
 use App\Models\PostReport;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -69,9 +72,84 @@ class PostReportResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('View')
+                    ->icon('heroicon-m-eye')
+                    ->color('gray')
+                    ->infolist([
+                        Section::make('Post Information')
+                            ->schema([
+                                TextEntry::make('user.nama_lengkap')
+                                    ->label('Author Name'),
+                                TextEntry::make('user.username')
+                                    ->label('Author Username'),
+                                TextEntry::make('post.title'),
+                                TextEntry::make('post.name_visibility')
+                                    ->label('Name Visibility')
+                                    ->formatStateUsing(fn ($state): string => match ($state) {
+                                        0 => 'Hidden',
+                                        1 => 'Public'
+                                    })
+                                    ->badge()
+                                    ->color(fn ($state): string => match ($state) {
+                                        0 => 'gray',
+                                        1 => 'success'
+                                    }),
+                                TextEntry::make('post.post_visibility')
+                                    ->label('Post Visibility')
+                                    ->formatStateUsing(fn ($state): string => match ($state) {
+                                        0 => 'Private',
+                                        1 => 'Public'
+                                    })
+                                    ->badge()
+                                    ->color(fn ($state): string => match ($state) {
+                                        0 => 'gray',
+                                        1 => 'success'
+                                    }),
+                                TextEntry::make('post.status')
+                                    ->formatStateUsing(fn ($state): string => match ($state) {
+                                        0 => 'Belum Diproses',
+                                        1 => 'Sedang Diproses',
+                                        2 => 'Sudah Ditangani',
+                                        3 => 'Ditolak'
+                                    })
+                                    ->badge()
+                                    ->color(fn ($state): string => match ($state) {
+                                        0 => 'gray',
+                                        1 => 'warning',
+                                        2 => 'success',
+                                        3 => 'danger',
+                                    }),
+                                // TextEntry::make('status_message'),
+                                TextEntry::make('post.postComments')
+                                    ->label('Post Comments')
+                                    ->formatStateUsing(fn ($record) => $record->postComments->count()),
+                                TextEntry::make('post.postLikes')
+                                    ->label('Post Likes')
+                                    ->formatStateUsing(fn ($record) => $record->postLikes->count()),
+                                TextEntry::make('post.postShares')
+                                    ->label('Post Shares')
+                                    ->formatStateUsing(fn ($record) => $record->postShares->count()),
+                                TextEntry::make('post.postViews')
+                                    ->label('Post Views')
+                                    ->formatStateUsing(fn ($record) => $record->postViews->count())
+                            ])
+                            ->columns(),
+                        Section::make('Body')
+                            ->schema([
+                                ImageEntry::make('post.postImages.path')
+                                    ->disk('images')
+                                    ->label('Images'),
+                                TextEntry::make('post.content')
+                                    ->markdown()
+                            ])
+                    ]),
                 // Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->model('post')
+                Tables\Actions\Action::make('Delete')
+                    ->label('Delete Post')
+                    ->color('danger')
+                    ->icon('heroicon-s-trash')
+                    ->requiresConfirmation()
+                    ->action(fn (PostReport $record) => $record->post()->delete())
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
