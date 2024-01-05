@@ -23,6 +23,11 @@ class PostComment extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
