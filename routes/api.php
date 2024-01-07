@@ -33,6 +33,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('/v1/post/report', [PostController::class, 'store'])->name('post.report');
     Route::get('/v1/reports',[PostController::class, 'index'])->name('reports');
     Route::get('/v1/reports/latest',[PostController::class, 'indexLatest'] )->name('latest.reports');
+    Route::get('/v1/reports/liked', [PostController::class, 'indexLiked'])->name('liked.reports');
     Route::get('/v1/detail-report/{id}', [PostController::class, 'show'])->name('detail.report');
     Route::post('/v1/detail-report/{postId}/post/comment', [CommentController::class, 'store'])->name('post.comment');
     Route::post('/v1/detail-report/{postId}/comment/{commentId}', [CommentController::class, 'replyComment'])->name('reply.comment');

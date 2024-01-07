@@ -27,22 +27,33 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): PostCollection
     {
         $report = Post::query()->where('post_visibility', '!=', 0)->paginate(8);
         return new PostCollection($report);
     }
 
-    public function indexLatest()
+    public function indexLatest(): PostCollection
     {
         $report = Post::query()->where('post_visibility', '!=', 0)->latest()->paginate(8);
+        return new PostCollection($report);
+    }
+
+    public function indexLiked(): PostCollection
+    {
+        $report = Post::query()->select(['posts.id', 'posts.title', 'posts.content', 'posts.user_id', 'posts.name_visibility', 'posts.post_visibility', 'posts.status', 'posts.created_at', DB::raw('COUNT(post_likes.post_id) as total_likes')])
+            ->join('post_likes', 'posts.id', '=', 'post_likes.post_id')
+            ->where('posts.name_visibility', '!=', 0)
+            ->groupBy('posts.id')
+            ->orderByDesc('total_likes')
+            ->get();
         return new PostCollection($report);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         try {
             $rules = [
