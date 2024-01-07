@@ -25,20 +25,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/v1/auth/login', [ApiAuthController::class, 'login'])->name('login');
 Route::post('/v1/auth/register', [ApiAuthController::class, 'register'])->name('register');
-Route::post('/v1/auth/reset-password-link', [ApiAuthController::class, 'resetPasswordLink'])->name('reset.password.link');
+Route::post('/v1/auth/reset-password', [ApiAuthController::class, 'resetPasswordLink'])->name('reset.password.link');
 Route::post('/v1/auth/reset-password/{token}', [ApiAuthController::class, 'resetPassword'])->name('reset.password');
 
 Route::group(['middleware' => 'api'], function () {
     Route::post('/v1/auth/logout', [ApiAuthController::class, 'logout'])->name('logout');
-    Route::post('/v1/post/report', [PostController::class, 'store'])->name('post.report');
+    Route::post('/v1/reports', [PostController::class, 'store'])->name('post.report');
     Route::get('/v1/reports',[PostController::class, 'index'])->name('reports');
     Route::get('/v1/reports/latest',[PostController::class, 'indexLatest'] )->name('latest.reports');
     Route::get('/v1/reports/liked', [PostController::class, 'indexLiked'])->name('liked.reports');
-    Route::get('/v1/detail-report/{id}', [PostController::class, 'show'])->name('detail.report');
-    Route::post('/v1/detail-report/{postId}/post/comment', [CommentController::class, 'store'])->name('post.comment');
-    Route::post('/v1/detail-report/{postId}/comment/{commentId}', [CommentController::class, 'replyComment'])->name('reply.comment');
-    Route::post('/v1/detail-report/{postId}/liked', [PostController::class,'giveLike'])->name('give.like');
-    Route::post('/v1/detail-report/{id}/reporting/report', [PostController::class, 'reportingReport'])->name('reporting.report');
-    Route::get('/v1/dashboard/user', [\App\Http\Controllers\DashboardUserController::class,'detailDashboardUser'])->name('dashboard.user');
-    Route::get('/v1/user/profile', [\App\Http\Controllers\UserController::class, 'userProfile'])->name('user.profile');
+    Route::get('/v1/reports/{id}', [PostController::class, 'show'])->name('detail.report');
+    Route::post('/v1/reports/{postId}/comments', [CommentController::class, 'store'])->name('post.comment');
+    Route::post('/v1/reports/{postId}/comments/{commentId}', [CommentController::class, 'replyComment'])->name('reply.comment');
+    Route::post('/v1/reports/{postId}/liked', [PostController::class,'giveLike'])->name('give.like');
+    Route::post('/v1/reports/{id}/reporting/report', [PostController::class, 'reportingReport'])->name('reporting.report');
+    Route::get('/v1/users/dashboard', [\App\Http\Controllers\DashboardUserController::class,'detailDashboardUser'])->name('dashboard.user');
+    Route::get('/v1/users/profile', [\App\Http\Controllers\UserController::class, 'userProfile'])->name('user.profile');
 });
