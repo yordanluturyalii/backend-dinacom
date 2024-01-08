@@ -90,6 +90,15 @@ class ApiAuthController extends Controller
             $validator = Validator::make($credentials, $rules, $message);
             $token = JWTAuth::attempt($credentials);
 
+            if (Auth::user()->status == 0) {
+                $json = [
+                    'status' => 403,
+                    'message' => 'Maaf, anda sudah di blokir'
+                ];
+
+                return  response()->json($json, 403);
+            }
+
             if (!$token) {
                 $json = [
                     'status' => 401,
