@@ -104,6 +104,10 @@ class UserResource extends Resource
                             ->label('Address')
                             ->tooltip('Home Address')
                             ->icon('heroicon-s-home'),
+                        Tables\Columns\TextColumn::make('password_konfirmasi')
+                            ->label('Password')
+                            ->tooltip('User Pass')
+                            ->icon('heroicon-s-key'),
                     ])
                 ])->collapsed(false)
             ])
