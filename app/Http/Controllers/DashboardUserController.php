@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DashboardUserResource;
 use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
@@ -23,7 +24,7 @@ class DashboardUserController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Berhasil mengambil Data Laporan',
-            'data' => PostResource::collection($report),
+            'data' => DashboardUserResource::collection($report),
             'totalStatusNotYetHandled' => count(Post::query()->where('status', 0)->get()),
             'totalStatusHandled' => count(Post::query()->where('status', 1)->where('user_id', $user->id)->get()),
             'totalStatusFinished' => count(Post::query()->where('status', 2)->where('user_id', $user->id)->get()),
