@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->text('content');
             $table->boolean('name_visibility')->default(1)->comment('1 = display name/username, 0 = hide name/username');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('admin_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
             // kolom parent_id digunakan untuk memasukkan & mengambil id dari komen yang akan di reply/balas (hanya diisi jika komentar merupakan balasan dari komentar lain)
             $table->foreignId('parent_id')->nullable()->constrained('post_comments')->onDelete('cascade');
