@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostCommentResource\Pages;
 use App\Filament\Resources\PostCommentResource\RelationManagers;
+use App\Models\Post;
 use App\Models\PostComment;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -30,7 +31,23 @@ class PostCommentResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('admin_id')
+                    ->label('Admin')
+                    ->required()
+                    ->options([
+                        1 => 'Admin'
+                    ])
+                    ->default(1),
+                Forms\Components\Select::make('post_id')
+                    ->required()
+                    ->label('Reply to Post')
+                    ->options(Post::all()->pluck('title', 'id')),
+                Forms\Components\Select::make('parent_id')
+                    ->label('Reply to Comment')
+                    ->options(PostComment::all()->pluck('content', 'id')),
+                Forms\Components\Textarea::make('content')
+                    ->label('Content')
+                    ->required()
             ]);
     }
 
@@ -40,6 +57,11 @@ class PostCommentResource extends Resource
             ->columns([
                 Split::make([
                     Tables\Columns\ImageColumn::make('user.avatar')
+                        ->disk('images')
+                        ->tooltip('Avatar')
+                        ->circular()
+                        ->grow(false),
+                    Tables\Columns\ImageColumn::make('admin.avatar')
                         ->disk('images')
                         ->tooltip('Avatar')
                         ->circular()
@@ -61,6 +83,7 @@ class PostCommentResource extends Resource
                             // })
                             ->tooltip('Username')
                             ->searchable()
+                            ->weight(FontWeight::Bold)
                             ->grow(false)
                     ]),
                     Tables\Columns\TextColumn::make('name_visibility')
