@@ -14,6 +14,7 @@ class PostComment extends Model
         'content',
         'name_visibility',
         'user_id',
+        'admin_id',
         'post_id',
         'parent_id'
     ];

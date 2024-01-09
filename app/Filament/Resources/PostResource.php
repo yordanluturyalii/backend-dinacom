@@ -151,16 +151,16 @@ class PostResource extends Resource
                                 // TextEntry::make('status_message'),
                                 TextEntry::make('postComments')
                                     ->label('Post Comments')
-                                    ->formatStateUsing(fn ($record) => $record->postComments->count()),
+                                    ->getStateUsing(fn ($record) => $record->postComments->count()),
                                 TextEntry::make('postLikes')
                                     ->label('Post Likes')
-                                    ->formatStateUsing(fn ($record) => $record->postLikes->count()),
+                                    ->getStateUsing(fn ($record) => $record->postLikes->count()),
                                 TextEntry::make('postShares')
                                     ->label('Post Shares')
-                                    ->formatStateUsing(fn ($record) => $record->postShares->count()),
+                                    ->getStateUsing(fn ($record) => $record->postShares->count()),
                                 TextEntry::make('postViews')
                                     ->label('Post Views')
-                                    ->formatStateUsing(fn ($record) => $record->postViews->count())
+                                    ->getStateUsing(fn ($record) => $record->postViews->count())
                             ])
                             ->columns(),
                         Section::make('Body')
