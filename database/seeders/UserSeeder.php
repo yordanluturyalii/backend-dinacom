@@ -20,8 +20,8 @@ class UserSeeder extends Seeder
             'tempat_tinggal' => 'Jl. Hmm..... Lupa wwkkwkw',
             'username' => 'hayo.siapa_123',
             'email' => 'user@gmail.com',
-            'password' => bcrypt('User123'),
-            'password_konfirmasi' => bcrypt('User123')
+            'password' => bcrypt('User1234'),
+            'password_konfirmasi' => bcrypt('User1234')
         ]);
     }
 }
