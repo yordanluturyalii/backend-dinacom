@@ -141,6 +141,14 @@ class ApiAuthController extends Controller
                 'status' => 500,
                 'message' => 'Tidak bisa membuat token'
             ];
+            return response()->json($json);
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 500,
+                'message' => $e->getMessage()
+            ];
+
+            return response()->json($json);
         }
     }
 
