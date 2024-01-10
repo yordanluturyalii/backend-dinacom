@@ -70,6 +70,12 @@ class CommentController extends Controller
             ];
 
             return response()->json($json, 422);
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 400,
+                'message' => $e->getMessage()
+            ];
+            return response()->json($json, 400);
         }
     }
 
@@ -140,6 +146,12 @@ class CommentController extends Controller
             ];
 
             return response()->json($json, 422);
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 400,
+                'message' => $e->getMessage()
+            ];
+            return response()->json($json, 400);
         }
     }
 }
