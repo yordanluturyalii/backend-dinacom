@@ -191,7 +191,7 @@ class ApiAuthController extends Controller
 
             $rand_color = '#' . dechex(mt_rand(0, 16777215));
             $avatar = new Avatar();
-            $avatar->create($request->username)->setBackground($rand_color)->save(public_path('/images/avatar/avatar-'.$request->username.'.png'));
+            $avatar->create($request->username)->setBackground($rand_color)->save(public_path('/images/avatar/avatar-'.$request->username.'.png'), 100);
             DB::beginTransaction();
             $user = User::create([
                 'nama_lengkap' => $request->nama_lengkap,
