@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use App\Mail\ResetPassword;
 use App\Models\User;
+use Aws\Exception\AwsException;
+use Aws\Ses\SesClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -206,6 +208,20 @@ class ApiAuthController extends Controller
 
             DB::commit();
 
+            $ses = new SesClient([
+                'profile' => 'default',
+                'version' => '2010-12-01',
+                'region' => 'ap-southeast-1',
+                'credentials' => [
+                    'key' => 'AKIAVHF524CANUXT6D5Z',
+                    'secret' => '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'
+                ]
+            ]);
+
+            $ses->verifyEmailAddress([
+                'EmailAddress' => $request->email
+            ]);
+
             $json = [
                 'status' => 201,
                 'message' => 'Registrasi Berhasil',
@@ -225,10 +241,17 @@ class ApiAuthController extends Controller
             return response()->json($json, 422);
         } catch (\Exception $e) {
             $json = [
-                'status' => 400,
+                'status' => 500,
                 'message' => $e->getMessage()
             ];
             return response()->json($json, 400);
+        } catch (AwsException $e) {
+            $json = [
+                'status' => 500,
+                'message' => $e->getMessage()
+            ];
+
+            return response()->json($json, 500);
         }
     }
 
@@ -244,31 +267,39 @@ class ApiAuthController extends Controller
 
     public function resetPasswordLink(Request $request)
     {
-        $validate = User::query()->where('email', '=', $request->email)->first();
-        if (!$validate) {
-            return response()->json([
-                'message' => 'Email tidak ditemukan'
+        try {
+            $validate = User::query()->where('email', '=', $request->email)->first();
+            if (!$validate) {
+                return response()->json([
+                    'message' => 'Email tidak ditemukan'
+                ]);
+            }
+
+            $str = new Generator();
+            $token = $str->charset(CharSet::LOWER_ALPHA)->length(40)->generate();
+
+            DB::table('password_resets')->insert([
+                'email' => $request->email,
+                'token' => $token,
+                'created_at' => Carbon::now()
             ]);
+
+            Mail::to($request->email)->send(new ResetPassword($token, $request->email));
+
+            $json = [
+                'status' => 200,
+                'message' => "Link ganti kata sandi telah kami kirimkan ke $request->email",
+                'token' => $token
+            ];
+
+            return response()->json($json, 200);
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 500,
+                'message' => $e->getMessage()
+            ];
+            return response()->json($json, 500);
         }
-
-        $str = new Generator();
-        $token = $str->charset(CharSet::LOWER_ALPHA)->length(40)->generate();
-
-        DB::table('password_resets')->insert([
-            'email' => $request->email,
-            'token' => $token,
-            'created_at' => Carbon::now()
-        ]);
-
-        Mail::to($request->email)->send(new ResetPassword($token, $request->email));
-
-        $json = [
-            'status' => 200,
-            'message' => "Link ganti kata sandi telah kami kirimkan ke $request->email",
-            'token' => $token
-        ];
-
-        return response()->json($json, 200);
     }
 
     public function resetPassword($token, Request $request)
@@ -329,10 +360,10 @@ class ApiAuthController extends Controller
             return response()->json($json, 422);
         } catch (\Exception $e) {
             $json = [
-                'status' => 400,
+                'status' => 500,
                 'message' => $e->getMessage()
             ];
-            return response()->json($json, 400);
+            return response()->json($json, 500);
         }
     }
 }
