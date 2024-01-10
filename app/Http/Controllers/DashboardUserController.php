@@ -25,7 +25,7 @@ class DashboardUserController extends Controller
             'status' => 200,
             'message' => 'Berhasil mengambil Data Laporan',
             'data' => DashboardUserResource::collection($report),
-            'totalStatusNotYetHandled' => count(Post::query()->where('status', 0)->get()),
+            'totalStatusNotYetHandled' => count(Post::query()->where('status', 0)->where('user_id', $user->id)->get()),
             'totalStatusHandled' => count(Post::query()->where('status', 1)->where('user_id', $user->id)->get()),
             'totalStatusFinished' => count(Post::query()->where('status', 2)->where('user_id', $user->id)->get()),
             'totalStatusCanceled' => count(Post::query()->where('status', 3)->where('user_id', $user->id)->get()),
