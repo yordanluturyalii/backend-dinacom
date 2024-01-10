@@ -15,7 +15,7 @@ class DetailPostResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => new UserResource($this->whenLoaded('user')),
+            'user' => $this->when($this->name_visibility != 0, new UserResource($this->whenLoaded('user'))),
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
