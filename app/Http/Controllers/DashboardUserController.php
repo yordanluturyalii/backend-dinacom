@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPSTORM_META\map;
+
 class DashboardUserController extends Controller
 {
     public function __construct()
@@ -30,5 +32,19 @@ class DashboardUserController extends Controller
             'totalStatusFinished' => count(Post::query()->where('status', 2)->where('user_id', $user->id)->get()),
             'totalStatusCanceled' => count(Post::query()->where('status', 3)->where('user_id', $user->id)->get()),
         ]);
+    }
+
+    public function getStatusByNewest() 
+    {
+        $user = Auth::user();
+        $report = Post::query()->where('user_id', $user->id)->latest();
+        
+        $json = [
+            'status' => 200,
+            'message' => 'Berhasil Memfilter Data',
+            'data' => new DashboardUserResource($report)
+        ];
+
+        return response()->json($json, 200);
     }
 }

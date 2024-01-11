@@ -208,20 +208,6 @@ class ApiAuthController extends Controller
 
             DB::commit();
 
-            $ses = new SesClient([
-                'profile' => 'default',
-                'version' => '2010-12-01',
-                'region' => 'ap-southeast-1',
-                'credentials' => [
-                    'key' => 'AKIAVHF524CANUXT6D5Z',
-                    'secret' => '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'
-                ]
-            ]);
-
-            $ses->verifyEmailAddress([
-                'EmailAddress' => $request->email
-            ]);
-
             $json = [
                 'status' => 201,
                 'message' => 'Registrasi Berhasil',
@@ -245,14 +231,7 @@ class ApiAuthController extends Controller
                 'message' => $e->getMessage()
             ];
             return response()->json($json, 400);
-        } catch (AwsException $e) {
-            $json = [
-                'status' => 500,
-                'message' => $e->getMessage()
-            ];
-
-            return response()->json($json, 500);
-        }
+        } 
     }
 
     public function logout()
