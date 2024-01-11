@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\PostLike;
 use App\Models\PostReport;
+use Exception;
 use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+
+use function PHPSTORM_META\map;
 
 class PostController extends Controller
 {
@@ -137,12 +140,23 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $report = Post::query()->where('post_visibility', '!=', 0)->findOrFail($id);
-        return response()->json([
-            'status' => 200,
-            'message' => 'Berhasil mengambil data',
-            'data' => new DetailPostResource($report->load(['user', 'postImages', 'PostComments']))
-        ]);
+        try {
+            $report = Post::query()->where('post_visibility', '!=', 0)->findOrFail($id);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Berhasil mengambil data',
+                'data' => new DetailPostResource($report->load(['user', 'postImages', 'PostComments']))
+            ]);
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
     }
 
     /**
@@ -165,7 +179,7 @@ class PostController extends Controller
     {
         $post = Post::query()->findOrFail($postId);
         $user = Auth::user();
-//       dd($user);
+        //       dd($user);
 
         $likedPost = new PostLike();
         $likedPost->user_id = $user->id;
