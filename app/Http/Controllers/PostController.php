@@ -177,19 +177,38 @@ class PostController extends Controller
 
     public function giveLike($postId): JsonResponse
     {
-        $post = Post::query()->findOrFail($postId);
-        $user = Auth::user();
-        //       dd($user);
+        try {
+            $post = Post::query()->findOrFail($postId);
+            $user = Auth::user();
 
-        $likedPost = new PostLike();
-        $likedPost->user_id = $user->id;
-        $likedPost->post_id = $post->id;
-        $likedPost->save();
+            if (!$post->postLikes()->where('user_id', $user->id)->exists()) {
+                $like = new PostLike();
+                $like->user_id = $user->id;
+                $like->post_id = $post->id;
+                $like->save();
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Berhasil Memberikan Tanggapan Cepat'
-        ]);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Berhasil Memberikan Tanggapan Cepat'
+                ]);
+            } else {
+                $json = [
+                    'status' => 404,
+                    'message' => 'Anda sudah Memberikan Tanggapan Cepat'
+                ];
+
+                return response()->json($json, 400);
+            }
+
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
     }
 
     public function reportingReport($postId)
