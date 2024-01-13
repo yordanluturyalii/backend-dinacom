@@ -199,7 +199,6 @@ class PostController extends Controller
 
                 return response()->json($json, 400);
             }
-
         } catch (\Exception $e) {
             $json = [
                 'status' => 404,
@@ -213,17 +212,40 @@ class PostController extends Controller
 
     public function reportingReport($postId)
     {
-        $post = Post::query()->findOrFail($postId);
-        $user = Auth::user();
+        try {
+            $post = Post::query()->findOrFail($postId);
+            $user = Auth::user();
 
-        $reportPost = new PostReport();
-        $reportPost->user_id = $user->id;
-        $reportPost->post_id = $post->id;
-        $reportPost->save();
+            if ($post->query()->where('post_visibility', '!=', 0)) {
+                if (!$post->postReports()->where('user_id', $user->id)->exists()) {
+                    $reportPost = new PostReport();
+                    $reportPost->user_id = $user->id;
+                    $reportPost->post_id = $post->id;
+                    $reportPost->save();
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Berhasil Melapor                                                                                                                                                                          kan Laporan'
-        ]);
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'Berhasil Melapor                                                                                                                                                                          kan Laporan'
+                    ]);
+                } else {
+                    $json = [
+                        'status' => 422,
+                        'message' => 'Anda sudah melaporkan laporan'
+                    ];
+
+                    return response()->json($json, 422);
+                }
+            } else {
+                throw new \Exception();
+            }
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
     }
 }
