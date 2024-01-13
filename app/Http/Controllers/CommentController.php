@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CommentResource;
+use App\Models\Post;
 use App\Models\PostComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,23 +43,28 @@ class CommentController extends Controller
             if ($validator->fails()) {
                 throw new ValidationException($validator);
             }
-
+            $post = Post::query()->findOrFail($postId);
             $user = Auth::user();
             // dd($user);
-            DB::beginTransaction();
-            $comment = new PostComment();
-            $comment->content = $request->content;
-            $comment->name_visibility = $request->name_visibility;
-            $comment->user_id = $user->id;
-            $comment->post_id = $postId;
-            $comment->save();
-            DB::commit();
+            if ($post->query()->where('post_visibility', "!=", 0)) {
+                DB::beginTransaction();
+                $comment = new PostComment();
+                $comment->content = $request->content;
+                $comment->name_visibility = $request->name_visibility;
+                $comment->user_id = $user->id;
+                $comment->post_id = $post->id;
+                $comment->save();
+                DB::commit();
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'Berhasil mengambil data',
-                'data' => new CommentResource($comment->load(['user']))
-            ]);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Berhasil memberikan komentar',
+                    'data' => new CommentResource($comment->load(['user']))
+                ]);
+            } else {
+                throw new \Exception();
+            }
+
         } catch (ValidationException $e) {
             DB::rollback();
 
@@ -72,10 +78,12 @@ class CommentController extends Controller
             return response()->json($json, 422);
         } catch (\Exception $e) {
             $json = [
-                'status' => 400,
-                'message' => $e->getMessage()
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
             ];
-            return response()->json($json, 400);
+
+            return response()->json($json, 404);
         }
     }
 
