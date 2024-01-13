@@ -23,6 +23,7 @@ class PostResource extends JsonResource
             'image' => PostImageResource::collection($this->postImages),
             'status' => $this->status,
             'visibility' => $this->post_visibility,
+            'nameVisibility' => $this->name_visibility,
             'publishedAt' => $this->created_at,
             'totalComment' => count($this->PostComments),
             'totalNeedResponse' => count($this->PostLikes),

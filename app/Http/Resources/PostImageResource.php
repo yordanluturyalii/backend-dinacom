@@ -16,7 +16,7 @@ class PostImageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'path' => \env("APP_URL").$this->path
+            'path' => \env("APP_URL").'/'.$this->path
         ];
     }
 }

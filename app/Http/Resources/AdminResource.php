@@ -17,7 +17,7 @@ class AdminResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'avatar' => env('APP_URL') . $this->avatar
+            'avatar' => env('APP_URL') . '/' . $this->avatar
         ];
     }
 }

@@ -16,7 +16,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'avatar' => $this->avatar,
+            'avatar' => env('APP_URL').'/'.$this->avatar,
             'namaLengkap' => $this->nama_lengkap,
             'tanggalLahir' => $this->tanggal_lahir,
             'tempatTinggal' => $this->tempat_tinggal,
