@@ -64,7 +64,6 @@ class CommentController extends Controller
             } else {
                 throw new \Exception();
             }
-
         } catch (ValidationException $e) {
             DB::rollback();
 
@@ -128,19 +127,33 @@ class CommentController extends Controller
             }
 
             $user = Auth::user();
-            DB::beginTransaction();
-            $comment = new PostComment();
-            $comment->content = $request->content;
-            $comment->name_visibility = $request->name_visibility;
-            $comment->user_id = $user->id;
-            $comment->post_id = $postId;
-            $comment->parent_id = $commentId;
-            $comment->save();
-            DB::commit();
+            $post = Post::query()->findOrFail($postId);
+            $comment = PostComment::query()->findOrFail($commentId);
+
+            if ($post->query()->where('post_visibility', "!=", 0)) {
+                DB::beginTransaction();
+                $comment = new PostComment();
+                $comment->content = $request->content;
+                $comment->name_visibility = $request->name_visibility;
+                $comment->user_id = $user->id;
+                $comment->post_id = $postId;
+                $comment->parent_id = $commentId;
+                $comment->save();
+                DB::commit();
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Berhasil memberikan komentar',
+                    'data' => new CommentResource($comment->load(['user']))
+                ]);
+            } else {
+                throw new \Exception();
+            }
+
 
             return response()->json([
                 'status' => 201,
-                'message' => 'Berhasil membuat comment',
+                'message' => 'Berhasil membuat komentar',
                 'data' => new CommentResource($comment->load(['user']))
             ]);
         } catch (ValidationException $e) {
@@ -156,10 +169,12 @@ class CommentController extends Controller
             return response()->json($json, 422);
         } catch (\Exception $e) {
             $json = [
-                'status' => 400,
-                'message' => $e->getMessage()
+                'status' => 404,
+                'message' => 'Komentar tidak ditemukan',
+                'error' => $e->getMessage()
             ];
-            return response()->json($json, 400);
+
+            return response()->json($json, 404);
         }
     }
 }
