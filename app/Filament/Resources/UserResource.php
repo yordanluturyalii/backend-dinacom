@@ -144,4 +144,9 @@ class UserResource extends Resource
     {
         return false;
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }
