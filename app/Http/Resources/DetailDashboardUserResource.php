@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DetailPostResource extends JsonResource
+class DetailDashboardUserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,7 @@ class DetailPostResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => $this->when($this->name_visibility != 0, new UserResource($this->whenLoaded('user'))),
+            'user' => new UserResource($this->user),
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,

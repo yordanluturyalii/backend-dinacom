@@ -42,5 +42,6 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('/v1/reports/{id}/reporting/report', [PostController::class, 'reportingReport'])->name('reporting.report');
     Route::get('/v1/users/profile', [\App\Http\Controllers\UserController::class, 'userProfile'])->name('user.profile');
     Route::get('/v1/users/dashboard', [\App\Http\Controllers\DashboardUserController::class,'detailDashboardUser'])->name('dashboard.user');
+    Route::get('/v1/users/dashboard/report/{postId}', [DashboardUserController::class, 'detailReportDashboardUser'])->name('detail.dashboard.user');
     Route::get('/v1/users/dashboard/filter/latest', [DashboardUserController::class, 'getStatusByNewest'])->name('filter.newest');
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DashboardUserResource;
+use App\Http\Resources\DetailDashboardUserResource;
 use App\Http\Resources\DetailPostUserResource;
 use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
@@ -35,11 +36,34 @@ class DashboardUserController extends Controller
         ]);
     }
 
-    public function getStatusByNewest() 
+    public function detailReportDashboardUser($postId)
+    {
+        try {
+            $user = Auth::user();
+            $report =  Post::query()->where('user_id', $user->id)->findOrFail($postId);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Berhasil mengambil data',
+                'data' => new DetailDashboardUserResource($report->load(['postImages', 'PostComments']))
+            ]);
+            
+        } catch (\Exception $e) {
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
+    }
+
+    public function getStatusByNewest()
     {
         $user = Auth::user();
         $report = Post::query()->where('user_id', $user->id)->latest();
-        
+
         $json = [
             'status' => 200,
             'message' => 'Berhasil Memfilter Data',
