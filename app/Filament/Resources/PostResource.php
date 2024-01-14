@@ -107,6 +107,8 @@ class PostResource extends Resource
                     ->infolist([
                         Section::make('Post Information')
                             ->schema([
+                                TextEntry::make('admin.name')
+                                    ->label('Author Name'),
                                 TextEntry::make('user.nama_lengkap')
                                     ->label('Author Name'),
                                 TextEntry::make('user.username')
@@ -167,13 +169,15 @@ class PostResource extends Resource
                             ->schema([
                                 ImageEntry::make('postImages.path')
                                     ->disk('images')
-                                    ->label('Images'),
+                                    ->label('Images')
+                                    ->height(500),
                                 TextEntry::make('content')
                                     ->markdown()
                             ])
                     ]),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
+                    ->label('Takedown Post')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

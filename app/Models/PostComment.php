@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PostComment extends Model
 {
@@ -36,6 +37,11 @@ class PostComment extends Model
 
     public function parentComment(): BelongsTo
     {
-        return $this->belongsTo(PostComment::class);
+        return $this->belongsTo(PostComment::class, 'parent_id');
+    }
+
+    public function childrenComment(): HasMany
+    {
+        return $this->hasMany(PostComment::class, 'parent_id');
     }
 }

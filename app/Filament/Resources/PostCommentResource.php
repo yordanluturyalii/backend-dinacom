@@ -8,6 +8,9 @@ use App\Models\Post;
 use App\Models\PostComment;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -56,16 +59,18 @@ class PostCommentResource extends Resource
         return $table
             ->columns([
                 Split::make([
-                    Tables\Columns\ImageColumn::make('user.avatar')
-                        ->disk('images')
-                        ->tooltip('Avatar')
-                        ->circular()
-                        ->grow(false),
-                    Tables\Columns\ImageColumn::make('admin.avatar')
-                        ->disk('images')
-                        ->tooltip('Avatar')
-                        ->circular()
-                        ->grow(false),
+                    Stack::make([
+                        Tables\Columns\ImageColumn::make('user.avatar')
+                            ->disk('images')
+                            ->tooltip('Avatar')
+                            ->circular()
+                            ->grow(false),
+                        Tables\Columns\ImageColumn::make('admin.avatar')
+                            ->disk('images')
+                            ->tooltip('Avatar')
+                            ->circular()
+                            ->grow(false),
+                    ])->grow(false),
                     Stack::make([
                         Tables\Columns\TextColumn::make('user.nama_lengkap')
                             // ->getStateUsing()
@@ -90,7 +95,7 @@ class PostCommentResource extends Resource
                     ->label('Name Visibility')
                     ->sortable()
                     ->formatStateUsing(fn ($state): string => match ($state) {
-                        0 => 'Hidden',
+                        0 => 'Anonim',
                         1 => 'Public'
                     })
                     ->badge()
@@ -104,7 +109,121 @@ class PostCommentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('View')
+                    ->icon('heroicon-m-eye')
+                    ->color('gray')
+                    ->infolist([
+                        // Section::make('Comment Information')
+                        //     ->schema([
+                        //         TextEntry::make('user.nama_lengkap')
+                        //             ->label('Author Name'),
+                        //         TextEntry::make('user.username')
+                        //             ->label('Author Username'),
+                        //         TextEntry::make('title'),
+                        //         TextEntry::make('name_visibility')
+                        //             ->label('Name Visibility')
+                        //             ->formatStateUsing(fn ($state): string => match ($state) {
+                        //                 0 => 'Hidden',
+                        //                 1 => 'Public'
+                        //             })
+                        //             ->badge()
+                        //             ->color(fn ($state): string => match ($state) {
+                        //                 0 => 'gray',
+                        //                 1 => 'success'
+                        //             }),
+                        //         TextEntry::make('post_visibility')
+                        //             ->label('Post Visibility')
+                        //             ->formatStateUsing(fn ($state): string => match ($state) {
+                        //                 0 => 'Private',
+                        //                 1 => 'Public'
+                        //             })
+                        //             ->badge()
+                        //             ->color(fn ($state): string => match ($state) {
+                        //                 0 => 'gray',
+                        //                 1 => 'success'
+                        //             }),
+                        //         TextEntry::make('status')
+                        //             ->formatStateUsing(fn ($state): string => match ($state) {
+                        //                 0 => 'Belum Diproses',
+                        //                 1 => 'Sedang Diproses',
+                        //                 2 => 'Sudah Ditangani',
+                        //                 3 => 'Ditolak'
+                        //             })
+                        //             ->badge()
+                        //             ->color(fn ($state): string => match ($state) {
+                        //                 0 => 'gray',
+                        //                 1 => 'warning',
+                        //                 2 => 'success',
+                        //                 3 => 'danger',
+                        //             }),
+                        //         // TextEntry::make('status_message'),
+                        //         TextEntry::make('postComments')
+                        //             ->label('Post Comments')
+                        //             ->getStateUsing(fn ($record) => $record->postComments->count()),
+                        //         TextEntry::make('postLikes')
+                        //             ->label('Post Likes')
+                        //             ->getStateUsing(fn ($record) => $record->postLikes->count()),
+                        //         TextEntry::make('postShares')
+                        //             ->label('Post Shares')
+                        //             ->getStateUsing(fn ($record) => $record->postShares->count()),
+                        //         TextEntry::make('postViews')
+                        //             ->label('Post Views')
+                        //             ->getStateUsing(fn ($record) => $record->postViews->count())
+                        //     ])
+                        //     ->columns(),
+                        Section::make('Post')
+                            ->schema([
+                                ImageEntry::make('post.postImages.path')
+                                    ->disk('images')
+                                    ->label('Images'),
+                                TextEntry::make('post.content')
+                                    ->markdown()
+                            ]),
+                        Section::make('Comment Information')
+                            ->schema([
+                                TextEntry::make('user.nama_lengkap')
+                                    ->label('Author Name'),
+                                TextEntry::make('user.username')
+                                    ->label('Author Username'),
+                                TextEntry::make('name_visibility')
+                                    ->label('Name Visibility')
+                                    ->formatStateUsing(fn ($state): string => match ($state) {
+                                        0 => 'Anonim',
+                                        1 => 'Public'
+                                    })
+                                    ->badge()
+                                    ->color(fn ($state): string => match ($state) {
+                                        0 => 'gray',
+                                        1 => 'success'
+                                    }),
+                                TextEntry::make('content')
+                                    ->markdown()
+                            ])
+                            ->columns(),
+                        Section::make('Reply to')
+                            ->schema([
+                                TextEntry::make('user.nama_lengkap')
+                                    ->label('Author Name'),
+                                TextEntry::make('user.username')
+                                    ->label('Author Username'),
+                                TextEntry::make('parentComment.name_visibility')
+                                    ->label('Name Visibility')
+                                    ->formatStateUsing(fn ($state): string => match ($state) {
+                                        0 => 'Anonim',
+                                        1 => 'Public'
+                                    })
+                                    ->badge()
+                                    ->color(fn ($state): string => match ($state) {
+                                        0 => 'gray',
+                                        1 => 'success'
+                                    }),
+                                TextEntry::make('parentComment.content')
+                                    ->label('Content')
+                                    ->markdown()
+                            ])
+                    ]),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Takedown Comment'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
