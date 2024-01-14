@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\PostController;
+use App\Http\Resources\DashboardUserResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -48,4 +49,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('/v1/users/dashboard/filter/notyethandled', [DashboardUserController::class, 'filterNotYetHandled'])->name('filter.notyethandled');
     Route::get('/v1/users/dashboard/filter/handled', [DashboardUserController::class, 'filterHandled'])->name('filter.handled');
     Route::get('/v1/users/dashboard/filter/finish', [DashboardUserController::class, 'filterFinish'])->name('filter.finish');
+    Route::post('/v1/users/dashboard/report/{postId}/notyethandled', [DashboardUserController::class, 'changeStatusNotyethandled'])->name('change.status.notyethandled');
+    Route::post('/v1/users/dashboard/report/{postId}/handled', [DashboardUserController::class, 'changeStatusHandled'])->name('change.status.handled');
+    Route::post('/v1/users/dashboard/report/{postId}/finish', [DashboardUserController::class, 'changeStatusFinish'])->name('change.status.finish');
+    Route::post('/v1/users/dashboard/report/{postId}/delete', [DashboardUserController::class, 'deleteReport'])->name('delete.report');
 });

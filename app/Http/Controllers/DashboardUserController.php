@@ -11,6 +11,7 @@ use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use function PHPSTORM_META\map;
 
@@ -86,7 +87,7 @@ class DashboardUserController extends Controller
         return response()->json($json, 200);
     }
 
-    public function filterNotYetHandled() 
+    public function filterNotYetHandled()
     {
         $user = Auth::user();
         $report = Post::query()->where('user_id', $user->id)->where('status', 0)->get();
@@ -100,7 +101,7 @@ class DashboardUserController extends Controller
         return response()->json($json, 200);
     }
 
-    public function filterHandled() 
+    public function filterHandled()
     {
         $user =  Auth::user();
         $report = Post::query()->where('user_id', $user->id)->where('status', 1)->get();
@@ -114,7 +115,7 @@ class DashboardUserController extends Controller
         return response()->json($json, 200);
     }
 
-    public function filterFinish() 
+    public function filterFinish()
     {
         $user =  Auth::user();
         $report = Post::query()->where('user_id', $user->id)->where('status', 2)->get();
@@ -126,5 +127,124 @@ class DashboardUserController extends Controller
         ];
 
         return response()->json($json, 200);
+    }
+
+    public function changeStatusNotyethandled($postId)
+    {
+        try {
+            $user = Auth::user();
+            $report = Post::query()->where('user_id', $user->id)->findOrFail($postId);
+
+
+            DB::beginTransaction();
+            $report->status = 0;
+            $report->save();
+            DB::commit();
+
+            $json = [
+                'status' => 200,
+                'message' => 'Berhasil mengubah status'
+            ];
+
+            return response()->json($json, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
+    }
+
+    public function changeStatusHandled($postId)
+    {
+        try {
+            $user = Auth::user();
+            $report = Post::query()->where('user_id', $user->id)->findOrFail($postId);
+
+
+            DB::beginTransaction();
+            $report->status = 1;
+            $report->save();
+            DB::commit();
+
+            $json = [
+                'status' => 200,
+                'message' => 'Berhasil mengubah status'
+            ];
+
+            return response()->json($json, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
+    }
+
+    public function changeStatusFinish($postId)
+    {
+        try {
+            $user = Auth::user();
+            $report = Post::query()->where('user_id', $user->id)->findOrFail($postId);
+
+
+            DB::beginTransaction();
+            $report->status = 2;
+            $report->save();
+            DB::commit();
+
+            $json = [
+                'status' => 200,
+                'message' => 'Berhasil mengubah status'
+            ];
+
+            return response()->json($json, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
+    }
+
+    public function deleteReport($postId)
+    {
+        try {
+            $user = Auth::user();
+            $report = Post::query()->where('user_id', $user->id)->findOrFail($postId);
+
+
+            DB::beginTransaction();
+            $report->delete();
+            DB::commit();
+
+            $json = [
+                'status' => 204,
+                'message' => 'Berhasil menghapus postingan'
+            ];
+
+            return response()->json($json, 204);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $json = [
+                'status' => 404,
+                'message' => 'Postingan tidak ditemukan',
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($json, 404);
+        }
     }
 }
