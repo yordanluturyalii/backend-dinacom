@@ -203,7 +203,7 @@ class ApiAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'password_konfirmasi' => $request->password_konfirmasi,
-                'avatar' => url('/images/avatar/avatar-'.$request->username.'.png')
+                'avatar' => env('APP_URL') . '/images/avatar/avatar-'.$request->username.'.png'
             ]);
 
             DB::commit();
