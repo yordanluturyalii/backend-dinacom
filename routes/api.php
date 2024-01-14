@@ -43,5 +43,9 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('/v1/users/profile', [\App\Http\Controllers\UserController::class, 'userProfile'])->name('user.profile');
     Route::get('/v1/users/dashboard', [\App\Http\Controllers\DashboardUserController::class,'detailDashboardUser'])->name('dashboard.user');
     Route::get('/v1/users/dashboard/report/{postId}', [DashboardUserController::class, 'detailReportDashboardUser'])->name('detail.dashboard.user');
-    Route::get('/v1/users/dashboard/filter/latest', [DashboardUserController::class, 'getStatusByNewest'])->name('filter.newest');
+    Route::get('/v1/users/dashboard/filter/latest', [DashboardUserController::class, 'filterLatest'])->name('filter.latest');
+    Route::get('/v1/users/dashboard/filter/longest', [DashboardUserController::class, 'filterLongest'])->name('filter.longest');
+    Route::get('/v1/users/dashboard/filter/notyethandled', [DashboardUserController::class, 'filterNotYetHandled'])->name('filter.notyethandled');
+    Route::get('/v1/users/dashboard/filter/handled', [DashboardUserController::class, 'filterHandled'])->name('filter.handled');
+    Route::get('/v1/users/dashboard/filter/finish', [DashboardUserController::class, 'filterFinish'])->name('filter.finish');
 });

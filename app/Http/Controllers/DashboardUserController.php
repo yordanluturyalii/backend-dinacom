@@ -47,7 +47,6 @@ class DashboardUserController extends Controller
                 'message' => 'Berhasil mengambil data',
                 'data' => new DetailDashboardUserResource($report->load(['postImages', 'PostComments']))
             ]);
-            
         } catch (\Exception $e) {
             $json = [
                 'status' => 404,
@@ -59,15 +58,71 @@ class DashboardUserController extends Controller
         }
     }
 
-    public function getStatusByNewest()
+    public function filterLatest()
     {
         $user = Auth::user();
-        $report = Post::query()->where('user_id', $user->id)->latest();
+        $report = Post::query()->where('user_id', $user->id)->latest()->get();
 
         $json = [
             'status' => 200,
             'message' => 'Berhasil Memfilter Data',
-            'data' => new DashboardUserResource($report)
+            'data' => DashboardUserResource::collection($report)
+        ];
+
+        return response()->json($json, 200);
+    }
+
+    public function filterLongest()
+    {
+        $user = Auth::user();
+        $report = Post::query()->where('user_id', $user->id)->oldest()->get();
+
+        $json = [
+            'status' => 200,
+            'message' => 'Berhasil Memfilter Data',
+            'data' => DashboardUserResource::collection($report)
+        ];
+
+        return response()->json($json, 200);
+    }
+
+    public function filterNotYetHandled() 
+    {
+        $user = Auth::user();
+        $report = Post::query()->where('user_id', $user->id)->where('status', 0)->get();
+
+        $json = [
+            'status' => 200,
+            'message' => 'Berhasil Memfilter Data',
+            'data' => DashboardUserResource::collection($report)
+        ];
+
+        return response()->json($json, 200);
+    }
+
+    public function filterHandled() 
+    {
+        $user =  Auth::user();
+        $report = Post::query()->where('user_id', $user->id)->where('status', 1)->get();
+
+        $json = [
+            'status' => 200,
+            'message' => 'Berhasil Memfilter Data',
+            'data' => DashboardUserResource::collection($report)
+        ];
+
+        return response()->json($json, 200);
+    }
+
+    public function filterFinish() 
+    {
+        $user =  Auth::user();
+        $report = Post::query()->where('user_id', $user->id)->where('status', 2)->get();
+
+        $json = [
+            'status' => 200,
+            'message' => 'Berhasil Memfilter Data',
+            'data' => DashboardUserResource::collection($report)
         ];
 
         return response()->json($json, 200);
