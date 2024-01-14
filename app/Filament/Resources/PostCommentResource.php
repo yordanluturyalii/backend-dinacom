@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\PostComment;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -19,6 +20,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 
 class PostCommentResource extends Resource
 {
@@ -44,10 +46,14 @@ class PostCommentResource extends Resource
                 Forms\Components\Select::make('post_id')
                     ->required()
                     ->label('Reply to Post')
-                    ->options(Post::all()->pluck('title', 'id')),
+                    ->options(Post::all()->pluck('title', 'id'))
+                    ->live(),
                 Forms\Components\Select::make('parent_id')
                     ->label('Reply to Comment')
-                    ->options(PostComment::all()->pluck('content', 'id')),
+                    // ->options(PostComment::all()->pluck('content', 'id')),
+                    ->options(fn (Get $get): Collection => PostComment::query()
+                        ->where('post_id', $get('post_id'))
+                        ->pluck('content', 'id')),
                 Forms\Components\Textarea::make('content')
                     ->label('Content')
                     ->required()
@@ -182,9 +188,14 @@ class PostCommentResource extends Resource
                         Section::make('Comment Information')
                             ->schema([
                                 TextEntry::make('user.nama_lengkap')
-                                    ->label('Author Name'),
+                                    ->label('Author Name')
+                                    ->visible(fn ($record): bool => $record->user_id !== null),
                                 TextEntry::make('user.username')
-                                    ->label('Author Username'),
+                                    ->label('Author Username')
+                                    ->visible(fn ($record): bool => $record->user_id !== null),
+                                TextEntry::make('admin.name')
+                                    ->label('Author Username')
+                                    ->visible(fn ($record): bool => $record->user_id === null),
                                 TextEntry::make('name_visibility')
                                     ->label('Name Visibility')
                                     ->formatStateUsing(fn ($state): string => match ($state) {
@@ -203,9 +214,14 @@ class PostCommentResource extends Resource
                         Section::make('Reply to')
                             ->schema([
                                 TextEntry::make('user.nama_lengkap')
-                                    ->label('Author Name'),
+                                    ->label('Author Name')
+                                    ->visible(fn ($record): bool => $record->user_id !== null),
                                 TextEntry::make('user.username')
-                                    ->label('Author Username'),
+                                    ->label('Author Username')
+                                    ->visible(fn ($record): bool => $record->user_id !== null),
+                                TextEntry::make('admin.name')
+                                    ->label('Author Username')
+                                    ->visible(fn ($record): bool => $record->user_id === null),
                                 TextEntry::make('parentComment.name_visibility')
                                     ->label('Name Visibility')
                                     ->formatStateUsing(fn ($state): string => match ($state) {
@@ -216,11 +232,15 @@ class PostCommentResource extends Resource
                                     ->color(fn ($state): string => match ($state) {
                                         0 => 'gray',
                                         1 => 'success'
-                                    }),
+                                    })
+                                    ->visible(fn ($record): bool => $record->parent_id !== null),
                                 TextEntry::make('parentComment.content')
                                     ->label('Content')
                                     ->markdown()
+                                    ->visible(fn ($record): bool => $record->parent_id !== null),
                             ])
+                            ->columns()
+                            ->visible(fn ($record): bool => $record->parent_id !== null)
                     ]),
                 Tables\Actions\DeleteAction::make()
                     ->label('Takedown Comment'),
@@ -246,5 +266,10 @@ class PostCommentResource extends Resource
             'create' => Pages\CreatePostComment::route('/create'),
             'edit' => Pages\EditPostComment::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
