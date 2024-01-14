@@ -76,11 +76,18 @@ class PostReportResource extends Resource
                     ->icon('heroicon-m-eye')
                     ->color('gray')
                     ->infolist([
-                        Section::make('Post Information')
+                        Section::make('Reporter')
                             ->schema([
                                 TextEntry::make('user.nama_lengkap')
                                     ->label('Author Name'),
                                 TextEntry::make('user.username')
+                                    ->label('Author Username'),
+                            ]),
+                        Section::make('Post Information')
+                            ->schema([
+                                TextEntry::make('post.user.nama_lengkap')
+                                    ->label('Author Name'),
+                                TextEntry::make('post.user.username')
                                     ->label('Author Username'),
                                 TextEntry::make('post.title'),
                                 TextEntry::make('post.name_visibility')
@@ -122,19 +129,19 @@ class PostReportResource extends Resource
                                 // TextEntry::make('status_message'),
                                 TextEntry::make('post.postComments')
                                     ->label('Post Comments')
-                                    ->formatStateUsing(fn ($record) => $record->postComments->count()),
+                                    ->getStateUsing(fn ($record) => $record->post->postComments->count()),
                                 TextEntry::make('post.postLikes')
                                     ->label('Post Likes')
-                                    ->formatStateUsing(fn ($record) => $record->postLikes->count()),
+                                    ->getStateUsing(fn ($record) => $record->post->postLikes->count()),
                                 TextEntry::make('post.postShares')
                                     ->label('Post Shares')
-                                    ->formatStateUsing(fn ($record) => $record->postShares->count()),
+                                    ->getStateUsing(fn ($record) => $record->post->postShares->count()),
                                 TextEntry::make('post.postViews')
                                     ->label('Post Views')
-                                    ->formatStateUsing(fn ($record) => $record->postViews->count())
+                                    ->getStateUsing(fn ($record) => $record->post->postViews->count())
                             ])
                             ->columns(),
-                        Section::make('Body')
+                        Section::make('Post')
                             ->schema([
                                 ImageEntry::make('post.postImages.path')
                                     ->disk('images')
@@ -144,8 +151,79 @@ class PostReportResource extends Resource
                             ])
                     ]),
                 // Tables\Actions\EditAction::make(),
+                // Tables\Actions\Action::make('View')
+                //     ->icon('heroicon-m-eye')
+                //     ->color('gray')
+                //     ->infolist([
+                //         Section::make('Post Information')
+                //             ->schema([
+                //                 TextEntry::make('user.nama_lengkap')
+                //                     ->label('Author Name'),
+                //                 TextEntry::make('user.username')
+                //                     ->label('Author Username'),
+                //                 TextEntry::make('post.title'),
+                //                 TextEntry::make('post.name_visibility')
+                //                     ->label('Name Visibility')
+                //                     ->formatStateUsing(fn ($state): string => match ($state) {
+                //                         0 => 'Hidden',
+                //                         1 => 'Public'
+                //                     })
+                //                     ->badge()
+                //                     ->color(fn ($state): string => match ($state) {
+                //                         0 => 'gray',
+                //                         1 => 'success'
+                //                     }),
+                //                 TextEntry::make('post.post_visibility')
+                //                     ->label('Post Visibility')
+                //                     ->formatStateUsing(fn ($state): string => match ($state) {
+                //                         0 => 'Private',
+                //                         1 => 'Public'
+                //                     })
+                //                     ->badge()
+                //                     ->color(fn ($state): string => match ($state) {
+                //                         0 => 'gray',
+                //                         1 => 'success'
+                //                     }),
+                //                 TextEntry::make('post.status')
+                //                     ->formatStateUsing(fn ($state): string => match ($state) {
+                //                         0 => 'Belum Diproses',
+                //                         1 => 'Sedang Diproses',
+                //                         2 => 'Sudah Ditangani',
+                //                         3 => 'Ditolak'
+                //                     })
+                //                     ->badge()
+                //                     ->color(fn ($state): string => match ($state) {
+                //                         0 => 'gray',
+                //                         1 => 'warning',
+                //                         2 => 'success',
+                //                         3 => 'danger',
+                //                     }),
+                //                 // TextEntry::make('status_message'),
+                //                 TextEntry::make('postComments')
+                //                     ->label('Post Comments')
+                //                     ->getStateUsing(fn ($record) => $record->post->postComments->count()),
+                //                 TextEntry::make('postLikes')
+                //                     ->label('Post Likes')
+                //                     ->getStateUsing(fn ($record) => $record->post->postLikes->count()),
+                //                 TextEntry::make('postShares')
+                //                     ->label('Post Shares')
+                //                     ->getStateUsing(fn ($record) => $record->post->postShares->count()),
+                //                 TextEntry::make('postViews')
+                //                     ->label('Post Views')
+                //                     ->getStateUsing(fn ($record) => $record->post->postViews->count())
+                //             ])
+                //             ->columns(),
+                //         Section::make('Body')
+                //             ->schema([
+                //                 ImageEntry::make('post.postImages.path')
+                //                     ->disk('images')
+                //                     ->label('Images'),
+                //                 TextEntry::make('post.content')
+                //                     ->markdown()
+                //             ])
+                //     ]),
                 Tables\Actions\Action::make('Delete')
-                    ->label('Delete Post')
+                    ->label('Takedown Post')
                     ->color('danger')
                     ->icon('heroicon-s-trash')
                     ->requiresConfirmation()
