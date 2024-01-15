@@ -46,7 +46,7 @@ class PostController extends Controller
     {
         $report = Post::query()->select(['posts.id', 'posts.title', 'posts.content', 'posts.user_id', 'posts.name_visibility', 'posts.post_visibility', 'posts.status', 'posts.created_at', DB::raw('COUNT(post_likes.post_id) as total_likes')])
             ->join('post_likes', 'posts.id', '=', 'post_likes.post_id')
-            ->where('posts.name_visibility', '!=', 0)
+            ->where('posts.post_visibility', '!=', 0)
             ->groupBy('posts.id')
             ->orderByDesc('total_likes')
             ->get();
