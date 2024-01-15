@@ -44,17 +44,17 @@ class PostReportResource extends Resource
                 Split::make([
                     Tables\Columns\ImageColumn::make('user.avatar')
                         ->disk('images')
-                        ->tooltip('Avatar')
+                        ->tooltip('Reporter Avatar')
                         ->circular()
                         ->grow(false),
                     Stack::make([
                         Tables\Columns\TextColumn::make('user.nama_lengkap')
-                            ->label('Full Name')
-                            ->tooltip('Full Name')
+                            ->label('Reporter Full Name')
+                            ->tooltip('Reporter Full Name')
                             ->weight(FontWeight::Bold)
                             ->grow(false),
                         Tables\Columns\TextColumn::make('user.username')
-                            ->tooltip('Username')
+                            ->tooltip('Reporter Username')
                             ->searchable()
                             ->grow(false)
                     ]),
@@ -82,7 +82,8 @@ class PostReportResource extends Resource
                                     ->label('Author Name'),
                                 TextEntry::make('user.username')
                                     ->label('Author Username'),
-                            ]),
+                            ])
+                            ->columns(),
                         Section::make('Post Information')
                             ->schema([
                                 TextEntry::make('post.user.nama_lengkap')
@@ -255,5 +256,15 @@ class PostReportResource extends Resource
     public static function canCreate(): bool
     {
         return false;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
     }
 }
