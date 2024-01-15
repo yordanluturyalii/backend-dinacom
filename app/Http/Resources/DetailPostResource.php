@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\PostComment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,7 +27,7 @@ class DetailPostResource extends JsonResource
             'publishedAt' => $this->created_at,
             'totalComment' => count($this->PostComments),
             'totalNeedResponse' => count($this->PostLikes),
-            'comment' => CommentResource::collection($this->whenLoaded('PostComments')),
+            'comment' => CommentResource::collection(PostComment::query()->latest()->get()),
             'url' => url()->current()
         ];
     }
