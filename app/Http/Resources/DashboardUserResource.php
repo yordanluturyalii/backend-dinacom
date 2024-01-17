@@ -24,7 +24,7 @@ class DashboardUserResource extends JsonResource
             'status' => $this->status,
             'visibility' => $this->post_visibility,
             'nameVisibility' => $this->name_visibility,
-            'publishedAt' => Carbon::createFromFormat("d-m-Y H:i:s", Carbon::parse($this->created_at), 'Asia/Jakarta'),
+            'publishedAt' => date("d/M/Y", $this->created_at),
             'totalComment' => count($this->PostComments),
             'totalNeedResponse' => count($this->PostLikes),
         ];
