@@ -23,7 +23,7 @@ class CommentResource extends JsonResource
             'contentComment' => $this->content,
             'visibility' => $this->name_visibility,
             'parentId' => $this->parent_id,
-            'publishedAt' => date("d M Y", strtotime($this->created_at))
+            'publishedAt' => date("d/m/Y", strtotime($this->created_at))
         ];
     }
 }

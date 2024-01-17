@@ -25,7 +25,7 @@ class PostResource extends JsonResource
             'status' => $this->status,
             'visibility' => $this->post_visibility,
             'nameVisibility' => $this->name_visibility,
-            'publishedAt' => date("d M Y", strtotime($this->created_at)),
+            'publishedAt' => date("d/m/Y", strtotime($this->created_at)),
             'totalComment' => count($this->PostComments),
             'totalNeedResponse' => count($this->PostLikes),
         ];
