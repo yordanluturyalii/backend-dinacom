@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 class CommentResource extends JsonResource
 {
@@ -22,7 +23,7 @@ class CommentResource extends JsonResource
             'contentComment' => $this->content,
             'visibility' => $this->name_visibility,
             'parentId' => $this->parent_id,
-            'publishedAt' => $this->created_at
+            'publishedAt' => Carbon::createFromFormat("d-m-Y H:i:s", $this->created_at, 'Asia/Jakarta')
         ];
     }
 }

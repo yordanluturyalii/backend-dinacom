@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 class PostResource extends JsonResource
 {
@@ -24,7 +25,7 @@ class PostResource extends JsonResource
             'status' => $this->status,
             'visibility' => $this->post_visibility,
             'nameVisibility' => $this->name_visibility,
-            'publishedAt' => $this->created_at,
+            'publishedAt' => Carbon::createFromFormat("d-m-Y H:i:s", $this->created_at, 'Asia/Jakarta'),
             'totalComment' => count($this->PostComments),
             'totalNeedResponse' => count($this->PostLikes),
         ];
