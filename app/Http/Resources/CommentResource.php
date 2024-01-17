@@ -23,7 +23,7 @@ class CommentResource extends JsonResource
             'contentComment' => $this->content,
             'visibility' => $this->name_visibility,
             'parentId' => $this->parent_id,
-            'publishedAt' => Carbon::createFromFormat("d-m-Y H:i:s", $this->created_at, 'Asia/Jakarta')
+            'publishedAt' => Carbon::createFromFormat("d-m-Y H:i:s", Carbon::parse($this->created_at), 'Asia/Jakarta')
         ];
     }
 }
