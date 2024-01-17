@@ -25,7 +25,7 @@ class DetailDashboardUserResource extends JsonResource
             'status' => $this->status,
             'visibility' => $this->post_visibility,
             'nameVisibility' => $this->name_visibility,
-            'publishedAt' => date("d/M/Y", $this->created_at),
+            'publishedAt' => date("d/M/Y", strtotime($this->created_at)),
             'totalComment' => count($this->PostComments),
             'totalNeedResponse' => count($this->PostLikes),
             'comment' => CommentResource::collection(PostComment::query()->where('post_id', $this->id)->latest()->get()),
