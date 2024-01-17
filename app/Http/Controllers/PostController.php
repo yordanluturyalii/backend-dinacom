@@ -32,13 +32,13 @@ class PostController extends Controller
      */
     public function index(): PostCollection
     {
-        $report = Post::query()->where('post_visibility', '!=', 0)->paginate(8);
+        $report = Post::query()->where('post_visibility', '!=', 0)->get();
         return new PostCollection($report);
     }
 
     public function indexLatest(): PostCollection
     {
-        $report = Post::query()->where('post_visibility', '!=', 0)->latest()->paginate(8);
+        $report = Post::query()->where('post_visibility', '!=', 0)->latest()->get();
         return new PostCollection($report);
     }
 
