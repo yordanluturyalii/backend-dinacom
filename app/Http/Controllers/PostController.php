@@ -63,7 +63,7 @@ class PostController extends Controller
                 'title' => ['required'],
                 'content' => ['required'],
                 'post_id' => ['exists:posts,id'],
-                'files' => ['required', 'max:20480'],
+                'files' => ['required', 'max:20971520'],
                 'name_visibility' => ['required'],
                 'post_visibility' => ['required']
             ];
