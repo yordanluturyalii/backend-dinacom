@@ -58,8 +58,24 @@ class PostReportResource extends Resource
                             ->searchable()
                             ->grow(false)
                     ]),
-                    Tables\Columns\ToggleColumn::make('user.status')
-                        ->tooltip('Account Status')
+                    Tables\Columns\ImageColumn::make('post.user.avatar')
+                        ->disk('images')
+                        ->tooltip('Reporter Avatar')
+                        ->circular()
+                        ->grow(false),
+                    Stack::make([
+                        Tables\Columns\TextColumn::make('post.user.nama_lengkap')
+                            ->label('Reporter Full Name')
+                            ->tooltip('Reporter Full Name')
+                            ->weight(FontWeight::Bold)
+                            ->grow(false),
+                        Tables\Columns\TextColumn::make('post.user.username')
+                            ->tooltip('Reporter Username')
+                            ->searchable()
+                            ->grow(false)
+                    ]),
+                    Tables\Columns\ToggleColumn::make('post.user.status')
+                        ->tooltip('Post Author Account Status')
                         ->onIcon('heroicon-s-no-symbol')
                         ->offIcon('heroicon-s-no-symbol')
                         ->onColor('success')
@@ -146,7 +162,8 @@ class PostReportResource extends Resource
                             ->schema([
                                 ImageEntry::make('post.postImages.path')
                                     ->disk('images')
-                                    ->label('Images'),
+                                    ->label('Images')
+                                    ->height(360),
                                 TextEntry::make('post.content')
                                     ->markdown()
                             ])
@@ -223,6 +240,7 @@ class PostReportResource extends Resource
                 //                     ->markdown()
                 //             ])
                 //     ]),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('Delete')
                     ->label('Takedown Post')
                     ->color('danger')
