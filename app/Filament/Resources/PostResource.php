@@ -170,7 +170,7 @@ class PostResource extends Resource
                                 ImageEntry::make('postImages.path')
                                     ->disk('images')
                                     ->label('Images')
-                                    ->height(500),
+                                    ->height(360),
                                 TextEntry::make('content')
                                     ->markdown()
                             ])

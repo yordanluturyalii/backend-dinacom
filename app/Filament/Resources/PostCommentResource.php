@@ -181,7 +181,8 @@ class PostCommentResource extends Resource
                             ->schema([
                                 ImageEntry::make('post.postImages.path')
                                     ->disk('images')
-                                    ->label('Images'),
+                                    ->label('Images')
+                                    ->height(360),
                                 TextEntry::make('post.content')
                                     ->markdown()
                             ]),
