@@ -63,9 +63,9 @@ class PostController extends Controller
                 'title' => ['required'],
                 'content' => ['required'],
                 'post_id' => ['exists:posts,id'],
+                'files' => ['required'],
                 'name_visibility' => ['required'],
                 'post_visibility' => ['required'],
-                'files' => ['required']
             ];
             $message = [
                 'required' => 'Maaf, input :attribute tidak boleh kosong. Silakan isi kolom yang diperlukan sebelum melanjutkan.',
