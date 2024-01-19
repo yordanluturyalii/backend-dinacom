@@ -11,6 +11,18 @@ use Illuminate\Validation\ValidationException;
 
 class Login extends BaseAuth
 {
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        $this->form->fill([
+            'login' => 'admin',
+            'password' => 'Admin123',
+            'remember' => true
+        ]);
+    }
+
     public function form(Form $form): Form
     {
         return $form
